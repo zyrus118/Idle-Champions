@@ -1,3 +1,21 @@
+# Test Branch
+## This branch is for testing a refactored memory system
+
+The ultimate goal of this branch is to create a refactored memory system that functions as well or better than the existing system that includes a new feature to automate or mostly automate updating offsets when CNE pushes out new patches.
+
+## TO DO
+1. Finish to do list
+2. Test gem farm and add ons
+3. Update other memory structures, currently only game manager and effect key handlers are on refactored system.
+4. Create alternative methods for leveling champions to max, one that doesn't rely on ui
+5. Finish Tree View Memory View
+6. Create add on for updating offsets
+7. Iterate on and refine changes
+8. Create new or modify existing docs for all changes
+
+##Known Issues
+1. To be discovered soon.
+
 # IC Script Hub
 ## Introduction
 

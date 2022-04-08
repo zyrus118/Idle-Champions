@@ -14,7 +14,7 @@ global g_SharedData := new IC_SharedData_Class
 #include %A_LineFile%\..\IC_ArrayFunctions_Class.ahk
 #include %A_LineFile%\..\MemoryRead\IC_MemoryFunctions_Class.ahk
 ;Shandie's Dash handler
-#include %A_LineFile%\..\MemoryRead\EffectKeyHandlers\TimeScaleWhenNotAttackedHandler.ahk
+#include %A_LineFile%\..\MemoryRead\IC_Structure_ActiveEffectHandlers.ahk
 
 class IC_SharedData_Class
 {
@@ -398,7 +398,7 @@ class IC_SharedFunctions_Class
         StartTime := A_TickCount
         ElapsedTime := 0
         dash := new TimeScaleWhenNotAttackedHandler ; create a new Dash Handler object.
-        dash.Initialize()
+        ;dash.Initialize()
         timeScale := this.Memory.ReadTimeScaleMultiplier()
         timeScale := timeScale < 1 ? 1 : timeScale ; time scale should never be less than 1
         timeout := 60000 ; 60s seconds ( previously / timescale (6s at 10x) )
@@ -407,11 +407,11 @@ class IC_SharedFunctions_Class
         ;   does full timeout duration
         ;   past highest accepted dashwait triggering area
         ;   dash is active, dash.GetScaleActive() toggles to true when dash is active and returns "" if fails to read.
-        while ( ElapsedTime < timeout AND this.Memory.ReadCurrentZone() < DashWaitMaxZone AND !(dash.GetScaleActive()) )
+        while ( ElapsedTime < timeout AND this.Memory.ReadCurrentZone() < DashWaitMaxZone AND !(dash.scaleActive.GetValue()) )
         {
             this.ToggleAutoProgress(0)
-            if !(this.SafetyCheck()) OR !(dash.IsBaseAddressCorrect())
-                dash.Initialize()
+            ;if !(this.SafetyCheck()) OR !(dash.IsBaseAddressCorrect())
+            ;    dash.Initialize()
             ElapsedTime := A_TickCount - StartTime
             g_SharedData.LoopString := "Dash Wait: " . ElapsedTime . " / " . estimate
         }
