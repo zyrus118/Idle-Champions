@@ -163,8 +163,8 @@ class CrusadersGame
 
         class Area extends _MemoryObjects.Reference
         {
-            activeMonsters := new _MemoryObjects.List(0x20, 0, this, _MemoryObjects.Reference, CrusadersGame.GameScreen.Monster)
-            Active := new _MemoryObjects.Value(0xF0, 0, this, "System.Boolean")
+            activeMonsters := new _MemoryObjects.List(0x24, 0, this, _MemoryObjects.Reference, CrusadersGame.GameScreen.Monster)
+            Active := new _MemoryObjects.Value(0xF4, 0, this, "System.Boolean")
             secondsSinceStarted := new _MemoryObjects.Value(0x114, 0, this, "System.Single")
             basicMonstersSapwnedThisArea := new _MemoryObjects.Value(0x150, 0, this, "System.Int32")
         }
@@ -236,7 +236,7 @@ class CrusadersGame
             ;CrusadersGame.GameScreen.Hero-FIELDS
             def := new CrusadersGame.Defs.HeroDef(0xC, 0x00, this)
             effects := new CrusadersGame.Effects.EffectKeyCollection(0x40, 0, this)
-            allUpgradesOrdered := new _MemoryObjects.Dictionary(0x10C, 0, this, _MemoryObjects.Reference, CrusadersGame.ChampionsGameInstance, _MemoryObjects.List, CrusadersGame.Defs.UpgradeDef)
+            allUpgradesOrdered := new _MemoryObjects.Dictionary(0x10C, 0, this, _MemoryObjects.Reference, CrusadersGame.ChampionsGameInstance, _MemoryObjects.List, {"Base":_MemoryObjects.Reference, "Type":CrusadersGame.Defs.UpgradeDef})
             effectsByUpgradeId := new _MemoryObjects.Dictionary(0x11C, 0x0, this, _MemoryObjects.Value, "System.Int32", _MemoryObjects.List, {"Base":_MemoryObjects.Reference, "Type":CrusadersGame.Effects.Effect})
             Owned := new _MemoryObjects.Value(0x180, 0, this, "System.Boolean")
             slotID := new _MemoryObjects.Value(0x184, 0x00, this, "System.Int32")
@@ -270,7 +270,7 @@ class CrusadersGame
 
                 class TopBar extends UnityGameEngine.Display.Drawable
                 {
-                    objectiveProgressBox := new CrusadersGame.GameScreen.UIComponents.TopBar.ObjectiveProgressBox(0x23C, 0, this) ;ObjectiveProgress.ObjectiveProgressBox(0x234, 0, this)
+                    objectiveProgressBox := new CrusadersGame.GameScreen.UIComponents.TopBar.ObjectiveProgressBox(0x24C, 0, this) ;ObjectiveProgress.ObjectiveProgressBox(0x234, 0, this)
                 }
             }
 
@@ -331,8 +331,8 @@ class CrusadersGame
             HeroHandler := new CrusadersGame.User.UserHeroHandler(0x8, 0, this)
             StatHandler := new CrusadersGame.User.UserStatHandler(0x18, 0, this)
             ModronHandler := new CrusadersGame.User.UserModronHandler(0x6C, 0, this)
-            redRubies := new _MemoryObjects.Value(0x130, 0, this, "System.Int32")
-            redRubiesSpent := new _MemoryObjects.Value(0x134, 0, this, "System.Int32")
+            redRubies := new _MemoryObjects.Value(0x134, 0, this, "System.Int32")
+            redRubiesSpent := new _MemoryObjects.Value(0x138, 0, this, "System.Int32")
             inited := new _MemoryObjects.Value(0x150, 0, this, "System.Boolean")
             ActiveUserGameInstance := new _MemoryObjects.Value(0x164, 0, this, "System.Int32")
         }
@@ -373,9 +373,9 @@ class CrusadersGame
 
         class UserStatHandler extends CrusadersGame.User.UserDataHandler
         {
-            BlackViperTotalGems := new _MemoryObjects.Value(0x260, 0, this, "System.Int32")
-            BrivSteelbonesStacks := new _MemoryObjects.Value(0x2C0, 0, this, "System.Int32")
-            BrivSprintStacks := new _MemoryObjects.Value(0x2C4, 0, this, "System.Int32")
+            BlackViperTotalGems := new _MemoryObjects.Value(0x268, 0, this, "System.Int32")
+            BrivSteelbonesStacks := new _MemoryObjects.Value(0x2C8, 0, this, "System.Int32")
+            BrivSprintStacks := new _MemoryObjects.Value(0x2CC, 0, this, "System.Int32")
         }
     }
 }

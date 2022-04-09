@@ -1,7 +1,9 @@
 # Test Branch
 ## This branch is for testing a refactored memory system
 
-The ultimate goal of this branch is to create a refactored memory system that functions as well or better than the existing system that includes a new feature to automate or mostly automate updating offsets when CNE pushes out new patches.
+The ultimate goal of this branch is to create a refactored memory system that functions as well or better than the existing system that will continue to work with existing scripts and add ons and includes a new feature to automate or mostly automate updating offsets when CNE pushes out new patches.
+
+Currently only works on Steam v425.1
 
 ## TO DO
 1. Finish to do list
@@ -12,9 +14,18 @@ The ultimate goal of this branch is to create a refactored memory system that fu
 6. Create add on for updating offsets
 7. Iterate on and refine changes
 8. Create new or modify existing docs for all changes
+9. Add support for EGS
 
-##Known Issues
+## Known Issues
 1. To be discovered soon.
+
+## Change Log
+
+4/9/22
+    Updated to v425.1 Steam
+    Create new shared function library for leveling.
+    Create new methods to determin champions max level.
+    Memory Tree View is now an add on.
 
 # IC Script Hub
 ## Introduction

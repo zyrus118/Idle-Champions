@@ -27,9 +27,11 @@ global g_ServerCall
 global g_InputsSent := 0
 global g_SaveHelper := new IC_SaveHelper_Class
 global g_BrivUserSettingsFromAddons := {}
+global g_Lvl := new IC_Leveling_Class
 
 #include %A_LineFile%\..\..\..\SharedFunctions\json.ahk
 #include %A_LineFile%\..\..\..\SharedFunctions\IC_SharedFunctions_Class.ahk
+#include %A_LineFile%\..\..\..\SharedFunctions\IC_Leveling_Class.ahk
 #include %A_LineFile%\..\IC_BrivGemFarm_Functions.ahk
 ;server call functions and variables Included after GUI so chest tabs maybe non optimal way of doing it
 #include %A_LineFile%\..\..\..\ServerCalls\IC_ServerCalls_Class.ahk

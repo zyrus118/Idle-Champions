@@ -144,6 +144,7 @@ class IC_BrivGemFarm_Class
         formationQ := g_SF.FindChampIDinSavedFormation( 1, "Speed", 1, 58 )
         formationW := g_SF.FindChampIDinSavedFormation( 2, "Stack Farm", 1, 58 )
         formationE := g_SF.FindChampIDinSavedFormation( 3, "Speed No Briv", 0, 58 )
+        formationMaxLvl := g_Lvl.GetFormationMaxLvl(formationModron)
         if(!formationQ OR !formationW OR !formationE)
             return
         g_PreviousZoneStartTime := A_TickCount
@@ -190,7 +191,7 @@ class IC_BrivGemFarm_Class
                     g_SharedData.TotalBossesHit++
                     g_SharedData.BossesHitThisRun++
                 }
-                if(doKeySpam AND g_BrivUserSettings[ "Fkeys" ] AND g_SF.AreChampionsUpgraded(formationQ))
+                if(doKeySpam AND g_BrivUserSettings[ "Fkeys" ] AND g_Lvl.AreHeroesUpgraded(formationMaxLvl)) ;g_SF.AreChampionsUpgraded(formationQ))
                 {
                     g_SF.DirectedInput(hold:=0,release:=1, keyspam) ;keysup
                     keyspam := ["{ClickDmg}"]

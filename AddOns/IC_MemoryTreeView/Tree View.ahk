@@ -15,6 +15,15 @@ Gui, MyGUI:Add, TreeView, x15 y+15 w600 h800 vTreeViewID ReadOnly gTV_Clicked Al
 Gui, MyGUI:Add, Text, x15 y+15 vTest w200,
 Gui, MyGUI:Show
 
+MyGUIGuiClose()
+{
+    MsgBox 4,, Are you sure you want to `exit?
+    IfMsgBox Yes
+        ExitApp
+    IfMsgBox No
+        return True
+}
+
 global g_TV
 
 MemoryReader.Refresh()
