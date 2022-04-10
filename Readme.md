@@ -22,10 +22,12 @@ Currently only works on Steam v425.1
 ## Change Log
 
 4/10/22
+
     Added simple logging to test methods for determining champions max level are actually working.
     Updated GameSettings and EngineSettings memory structures, for both Steam and EGS.
 
 4/9/22
+
     Updated to v425.1 Steam
     Create new shared function library for leveling.
     Create new methods to determine champions max level.
