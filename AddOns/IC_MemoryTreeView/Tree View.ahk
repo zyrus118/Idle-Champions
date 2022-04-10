@@ -4,6 +4,8 @@
 ;#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_MemoryObjects_Class.ahk
 #include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_Structure_IdleGameManager.ahk
 #include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_Structure_ActiveEffectHandlers.ahk
+#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_Structure_GameSettings.ahk
+#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_Structure_EngineSettings.ahk
 #include %A_LineFile%\..\..\..\SharedFunctions\classExceptionHandler.ahk
 ;to do - fix exception when child doesn't populate, collapse then expand again should do it.
 ;to do - auto read in structures
@@ -28,7 +30,7 @@ global g_TV
 
 MemoryReader.Refresh()
 GuiControl, -Redraw, TreeViewID
-objArray := [ new IdleGameManager, new BrivUnnaturalHasteHandler, new TimeScaleWhenNotAttackedhandler, new HavilarImpHandler, new OminContractualObligationsHandler, new NerdWagonHandler ]
+objArray := [ new IdleGameManager, new BrivUnnaturalHasteHandler, new TimeScaleWhenNotAttackedhandler, new HavilarImpHandler, new OminContractualObligationsHandler, new NerdWagonHandler, new GameSettings, new CoreEngineSettings ]
 g_TV := new TV_MemoryView(objArray*)
 TV_Modify(0, "Sort") 
 GuiControl, +Redraw, TreeViewID

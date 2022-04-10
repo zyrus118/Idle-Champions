@@ -6,6 +6,8 @@
 #include %A_LineFile%\..\IC_CrusadersGameDataSet_Class.ahk
 #include %A_LineFile%\..\IC_DialogManager_Class.ahk
 #include %A_LineFile%\..\IC_Structure_IdleGameManager.ahk
+#include %A_LineFile%\..\IC_Structure_GameSettings.ahk
+#include %A_LineFile%\..\IC_Structure_EngineSettings.ahk
 #include %A_LineFile%\..\IC_MemoryReader_Class.ahk
 
 ;Check if you have installed the class correctly.
@@ -33,6 +35,8 @@ class IC_MemoryFunctions_Class
         this.CrusadersGameDataSet := new IC_CrusadersGameDataSet_Class
         this.DialogManager := new IC_DialogManager_Class
         this.idleGameManager := new IdleGameManager
+        this.idleGameSettings := new GameSettings
+        this.idleEngineSettings := new CoreEngineSettings
     }
 
     ;Updates installed after the date of this script may result in the pointer addresses no longer being accurate.
@@ -118,10 +122,14 @@ class IC_MemoryFunctions_Class
 
     ReadGameVersion()
     {
-        if(this.GenericGetValue(this.GameSettings.GameSettings.PostFix)  != "")
-            return this.GenericGetValue(this.GameSettings.GameSettings.Version) . this.GenericGetValue(this.GameSettings.GameSettings.PostFix) 
+        ;if(this.GenericGetValue(this.GameSettings.GameSettings.PostFix)  != "")
+        ;    return this.GenericGetValue(this.GameSettings.GameSettings.Version) . this.GenericGetValue(this.GameSettings.GameSettings.PostFix) 
+        ;else
+        ;    return this.GenericGetValue(this.GameSettings.GameSettings.Version)  
+        if(this.idleGameSettings.PostFix.GetValue()  != "")
+            return this.idleGameSettings.MobileClientVersion.GetValue() . this.idleGameSettings.PostFix.GetValue()
         else
-            return this.GenericGetValue(this.GameSettings.GameSettings.Version)  
+            return this.idleGameSettings.MobileClientVersion.GetValue()
     }
 
     ReadGameStarted()
@@ -304,27 +312,32 @@ class IC_MemoryFunctions_Class
 
     ReadUserID()
     {
-        return this.GenericGetValue(this.GameSettings.GameSettings.UserID)
+        ;return this.GenericGetValue(this.GameSettings.GameSettings.UserID)
+        return this.idleGameSettings.UserID.GetValue()
     }
 
     ReadUserHash()
     {
-        return this.GenericGetValue(this.GameSettings.GameSettings.Hash)
+        ;return this.GenericGetValue(this.GameSettings.GameSettings.Hash)
+        return this.idleGameSettings.Hash.GetValue()
     }
 
     ReadInstanceID()
     {
-        return this.GenericGetValue(this.GameSettings.GameSettings._Instance.InstanceID)
+        ;return this.GenericGetValue(this.GameSettings.GameSettings._Instance.InstanceID)
+        return this.idleGameSettings.Instance.instanceID.GetValue()
     }
 
     ReadWebRoot()
     {
-        return this.GenericGetValue(this.Enginesettings.EngineSettings.WebRoot) 
+        ;return this.GenericGetValue(this.Enginesettings.EngineSettings.WebRoot) 
+        return this.idleEngineSettings.WebRoot.GetValue()
     }
 
     ReadPlatform()
     {
-        return this.GenericGetValue(this.GameSettings.GameSettings.Platform) 
+        ;return this.GenericGetValue(this.GameSettings.GameSettings.Platform)
+        return this.idleGameSettings.Platform.GetValue()
     }
     
     

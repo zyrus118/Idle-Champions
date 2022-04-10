@@ -127,6 +127,8 @@ class IC_BrivGemFarm_Class
     ;The primary loop for gem farming using Briv and modron.
     GemFarm()
     {
+        g_Log.StartLogging()
+        logInit := new _EventLog("Initialize Gem Run")
         static lastResetCount := 0
         g_SharedData.TriggerStart := true
         g_SF.Hwnd := WinExist("ahk_exe IdleDragons.exe")
@@ -145,10 +147,14 @@ class IC_BrivGemFarm_Class
         formationW := g_SF.FindChampIDinSavedFormation( 2, "Stack Farm", 1, 58 )
         formationE := g_SF.FindChampIDinSavedFormation( 3, "Speed No Briv", 0, 58 )
         formationMaxLvl := g_Lvl.GetFormationMaxLvl(formationModron)
+        logInit.Add(new _DataPoint("Modron Formation Max Level Array", ArrFnc.GetDecFormattedAssocArrayString(formationMaxLvl)))
         if(!formationQ OR !formationW OR !formationE)
             return
         g_PreviousZoneStartTime := A_TickCount
         g_SharedData.StackFail := 0
+        logInit.Stop()
+        g_Log.LogObject(logInit)
+        logGemRun := new _EventLog("Gem Run, Initial", true)
         loop
         {
             g_SharedData.LoopString := "Main Loop"
@@ -158,6 +164,10 @@ class IC_BrivGemFarm_Class
             g_SF.SetFormation(g_BrivUserSettings)
             if ( g_SF.Memory.ReadResetsCount() > lastResetCount OR g_SharedData.TriggerStart) ; first loop or Modron has reset
             {
+                logGemRun.Stop()
+                g_Log.LogObject(logGemRun)
+                g_Log.ClearStack()
+                logGemRun := new _EventLog("Gem Run", true)
                 g_SharedData.BossesHitThisRun := 0
                 g_SF.ToggleAutoProgress( 0, false, true )
                 g_SF.WaitForFirstGold()
@@ -185,7 +195,9 @@ class IC_BrivGemFarm_Class
                 this.ModronResetCheck()
             if(CurrentZone > PreviousZone) ; needs to be greater than because offline could stacking getting stuck in descending zones.
             {
+                logNewZone := new _EventLog("New Zone", true)
                 PreviousZone := CurrentZone
+                logNewZone.Add(new _DataPoint("Current Zone", CurrentZone))
                 if(!Mod( g_SF.Memory.ReadHighestZone(), 5 ))
                 {
                     g_SharedData.TotalBossesHit++
@@ -198,6 +210,7 @@ class IC_BrivGemFarm_Class
                     doKeySpam := false
                 }
                 g_SF.InitZone( keyspam )
+                logNewZone.Stop()
             }
             g_SF.ToggleAutoProgress( 1 )
             if(g_SF.CheckifStuck())

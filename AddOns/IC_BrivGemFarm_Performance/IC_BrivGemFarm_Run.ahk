@@ -28,6 +28,7 @@ global g_InputsSent := 0
 global g_SaveHelper := new IC_SaveHelper_Class
 global g_BrivUserSettingsFromAddons := {}
 global g_Lvl := new IC_Leveling_Class
+global g_Log := new _classLog(false)
 
 #include %A_LineFile%\..\..\..\SharedFunctions\json.ahk
 #include %A_LineFile%\..\..\..\SharedFunctions\IC_SharedFunctions_Class.ahk
@@ -38,6 +39,7 @@ global g_Lvl := new IC_Leveling_Class
 #include %A_LineFile%\..\..\..\SharedFunctions\IC_SaveHelper_Class.ahk
 #include *i %A_LineFile%\..\IC_BrivGemFarm_Mods.ahk
 #include %A_LineFile%\..\IC_BrivGemFarm_Settings.ahk
+#include %A_LineFile%\..\..\..\Logging\IC_Log_Class.ahk
 
 ;check if first run
 If !IsObject( g_UserSettings )

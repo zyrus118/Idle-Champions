@@ -8,8 +8,8 @@ Currently only works on Steam v425.1
 ## TO DO
 1. Finish to do list
 2. Test gem farm and add ons
-3. Update other memory structures, currently only game manager and effect key handlers are on refactored system.
-4. Create alternative methods for leveling champions to max, one that doesn't rely on ui
+3. Update Dat Set Memory Structure for Steam and EGS and GameManager/Effect Keys for EGS.
+4. Figure out how to make a to do list auto number, or remove numbering.
 5. Finish Tree View Memory View
 6. Create add on for updating offsets
 7. Iterate on and refine changes
@@ -21,10 +21,14 @@ Currently only works on Steam v425.1
 
 ## Change Log
 
+4/10/22
+    Added simple logging to test methods for determining champions max level are actually working.
+    Updated GameSettings and EngineSettings memory structures, for both Steam and EGS.
+
 4/9/22
     Updated to v425.1 Steam
     Create new shared function library for leveling.
-    Create new methods to determin champions max level.
+    Create new methods to determine champions max level.
     Memory Tree View is now an add on.
 
 # IC Script Hub

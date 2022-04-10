@@ -105,11 +105,16 @@ class _EventLog
     event.description := ""
     event.duration := ""
     eventLog := {}
-    __new( description )
+    __new( description, addToStack := "false" )
     {
         this.event := {}
         this.event.description := description . ""
         this.event.duration := new _ValueStartStop()
+        if addToStack
+        {
+            g_Log.AddToStack(this)
+            this.OnStack := true
+        }
         Return this
     }
 
@@ -121,6 +126,8 @@ class _EventLog
     Stop()
     {
         this.event.duration.Stop()
+        if this.OnStack
+            g_Log.PopStack()
     }
 }
 
@@ -139,6 +146,7 @@ class _ValueStartStop
     Stop()
     {
         this.ms := A_TickCount - this.startTickCount
+        this.minutes := this.ms / 60000
     }
 }
 

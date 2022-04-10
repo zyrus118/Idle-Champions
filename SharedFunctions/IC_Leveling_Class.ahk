@@ -49,12 +49,23 @@ class IC_Leveling_Class
     ; param associative array champID:MaxLvl (use GetFormationMaxLvl to generate), return true or false
     AreHeroesUpgraded(maxLvlArray)
     {
+        log := new _EventLog(A_ThisFunc, true)
+        log.Add(new _DataPoint("Param: maxLvlArray", ArrFnc.GetDecFormattedAssocArrayString(maxLvlArray)))
         this.Heroes.SetAddress(true)
         for k, v in maxLvlArray
         {
-            if (v > this.Heroes.Item[k-1].Level.GetValue())
+            lvl := this.Heroes.Item[k-1].Level.GetValue()
+            log.Add(new _DataPoint("ChampID " . k . " level", v))
+            if (v > lvl)
+            {
+                log.Add(new _DataPoint("Return", "false"))
+                log.Stop()
+                g_Log.PopStack()
                 return false
+            }
         }
+        log.Add(new _DataPoint("Return", "true"))
+        log.Stop()
         return true
     }
 }
