@@ -4,12 +4,12 @@
 MemoryReader.CheckICactive()
 MemoryReader.Refresh()
 
-class Static_Base_GameSettings extends _MemoryObjects.StaticBase
+class Static_Base_GameSettings extends System.StaticBase
 {
     static Offset := MemoryReader.Reader.Is64Bit ? 0x493E40 : 0x3AB064
 }
 
-class GameSettings extends _MemoryObjects.Reference
+class GameSettings extends System.Object
 {
     __new()
     {
@@ -17,17 +17,17 @@ class GameSettings extends _MemoryObjects.Reference
         this.GetAddress := this.variableGetAddress
         this.ParentObj := Static_Base_GameSettings
         this.StaticOffset := MemoryReader.Reader.Is64Bit ? 0xA80 : 0xE00
-        this.UserID := new _MemoryObjects.Value(this.StaticOffset + 0x20, this.StaticOffset + 0x40, this, "System.Int32")
-        this.Hash := new _MemoryObjects.String(this.StaticOffset + 0x28, this.StaticOffset + 0x48, this)
-        this.Platform := new _MemoryObjects.Value(this.StaticOffset + 0x44, this.StaticOffset + 0x70, this, "System.Int32")
-        this.MobileClientVersion := new _MemoryObjects.Value(this.StaticOffset + 0x4C, this.StaticOffset + 0x80, this, "System.Int32")
-        this.PostFix := new _MemoryObjects.String(this.StaticOffset + 0x50, this.StaticOffset + 0x88, this)
+        this.UserID := new System.Int32(this.StaticOffset + 0x20, this.StaticOffset + 0x40, this)
+        this.Hash := new System.String(this.StaticOffset + 0x28, this.StaticOffset + 0x48, this)
+        this.Platform := new System.Int32(this.StaticOffset + 0x44, this.StaticOffset + 0x70, this)
+        this.MobileClientVersion := new System.Int32(this.StaticOffset + 0x4C, this.StaticOffset + 0x80, this)
+        this.PostFix := new System.String(this.StaticOffset + 0x50, this.StaticOffset + 0x88, this)
         this.Instance := new GameSettings._Instance(this.StaticOffset, this.StaticOffset, this)
         return this
     }
 
-    class _Instance extends _MemoryObjects.Reference
+    class _Instance extends System.Object
     {
-        instanceID := new _MemoryObjects.Value(0x10, 0, this, "System.Int64")
+        instanceID := new System.Int64(0x10, 0, this)
     }
 }

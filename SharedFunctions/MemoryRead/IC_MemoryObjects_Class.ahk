@@ -1,6 +1,6 @@
-class _MemoryObjects
+class System
 {
-    class Reference
+    class Object
     {
         __new(offset32, offset64, parentObj)
         {
@@ -32,20 +32,19 @@ class _MemoryObjects
         }
     }
 
-    class Collection extends _MemoryObjects.Reference
+    class Collection extends System.Object
     {
         NewChild(parent, base, type, offset)
         {
-            if (base.__Class == "_MemoryObjects.Value")
+            ;this first if doesn't actually do anything. need to rethink collections with updated value classes
+            if (base.__Class == "System.Value")
                 obj := new base(0, 0, parent, type)
-            else if (base.__Class == "_MemoryObjects.List")
+            else if (base.__Class == "System.List")
                 obj := new base(0, 0, parent, type.Base, type.Type)
-            else if (base.__Class == "_MemoryObjects.Dictionary")
+            else if (base.__Class == "System.Dictionary")
                 obj := new base(0, 0, parent, base.Key, type.Key, base.Value, type.Value)
-            else if (base.__Class == "_MemoryObjects.String")
+            else if (base.__Class == "System.String")
                 obj := new base(0, 0, parent)
-            ;else if (base.isEnum == "_MemoryObjects.Enum")
-            ;    obj := new base(0, 0, parent)
             else
                 obj := new type(0, 0, parent)
             obj.Offset := offset
@@ -54,16 +53,16 @@ class _MemoryObjects
     }
 
     ;item base is the memory class, and item type is the c# type
-    class List extends _MemoryObjects.Collection
+    class List extends System.Collection
     {
         __new(offset32, offset64, parentObject, itemBase, itemType)
         {
             this.Offset := MemoryReader.Reader.Is64Bit ? offset64 : offset32
             this.ParentObj := parentObject
             this.GetAddress := this.variableGetAddress
-            this.List := new _MemoryObjects.Reference(offset32, offset64, parentObject)
-            this._items := new _MemoryObjects.Reference(0x8, 0x10, this)
-            this._size := new _MemoryObjects.Value(0xC, 0x18, this, "System.Int32")
+            this.List := new System.Object(offset32, offset64, parentObject)
+            this._items := new System.Object(0x8, 0x10, this)
+            this._size := new System.Int32(0xC, 0x18, this)
             this.ItemOffsetBase := MemoryReader.Reader.Is64Bit ? 0x20 : 0x10
             this.ItemOffsetStep := MemoryReader.Reader.Is64Bit ? 0x8 : 0x4
             this.ItemBase := itemBase
@@ -90,16 +89,16 @@ class _MemoryObjects
         }
     }
 
-    class Dictionary extends _MemoryObjects.Collection
+    class Dictionary extends System.Collection
     {
         __new(offset32, offset64, parentObject, keyBase, keyType, valueBase, valueType)
         {
             this.Offset := MemoryReader.Reader.Is64Bit ? offset64 : offset32
             this.ParentObj := parentObject
             this.GetAddress := this.variableGetAddress
-            this.Dict := new _MemoryObjects.Reference(offset32, offset64, parentObject)
-            this.entries := new _MemoryObjects.Reference(0xC, 0x10, this)
-            this.count := new _MemoryObjects.Value(0x20, 0x18, this, "System.Int32")
+            this.Dict := new System.Object(offset32, offset64, parentObject)
+            this.entries := new System.Object(0xC, 0x10, this)
+            this.count := new System.Int32(0x20, 0x18, this)
             this.KeyOffsetBase := MemoryReader.Reader.Is64Bit ? 0x28 : 0x18
             this.ValueOffsetBase := MemoryReader.Reader.Is64Bit ? 0x30 : 0x1C
             this.OffsetStep := MemoryReader.Reader.Is64Bit ? 0x18 : 0x10
@@ -137,39 +136,82 @@ class _MemoryObjects
         }
     }
 
-    class Value
+    class Value extends System.Object
     {
-        __new(offset32, offset64, parentObject, type)
-        {
-            this.Offset := MemoryReader.Reader.Is64Bit ? offset64 : offset32
-            if !(_MemoryObjects.Value.genericTypeSize.HasKey(type))
-                ExceptionHandler.ThrowError("Value type parameter is invalid.`nInvalid Parameter: " . type, -2)
-            this.Type := type
-            this.ParentObj := parentObject
-            return this
-        }
-
         GetValue()
         {
-            return MemoryReader.Reader.read(this.ParentObj.GetAddress() + this.Offset, _MemoryObjects.Value.genericTypeSize[this.Type])
+            return MemoryReader.Reader.read(this.ParentObj.GetAddress() + this.Offset, this.Type)
         }
-
-        static genericTypeSize :=   {   "System.Byte": "Char",     "System.UByte": "UChar"
-                                    ,   "System.Short": "Short",   "System.UShort": "UShort"
-                                    ,   "System.Int32": "Int",     "System.UInt32": "UInt"
-                                    ,   "System.Int64": "Int64",   "System.UInt64": "UInt64"
-                                    ,   "System.Single": "Float",  "System.USingle": "UFloat"
-                                    ,   "System.Double": "Double", "System.Boolean": "Char"}
     }
 
-    class String extends _MemoryObjects.Reference
+    class Byte extends System.Value
+    {
+        Type := "Char"
+    }
+
+    class UByte extends System.Value
+    {
+        Type := "UChar"
+    }
+
+    class Short extends System.Value
+    {
+        Type := "Short"
+    }
+
+    class UShort extends System.Value
+    {
+        Type := "UShort"
+    }
+
+    class Int32 extends System.Value
+    {
+        Type := "Int"
+    }
+
+    class UInt32 extends System.Value
+    {
+        Type := "UInt"
+    }
+
+    class Int64 extends System.Value
+    {
+        Type := "Int64"
+    }
+
+    class UInt64 extends System.Value
+    {
+        Type := "UInt64"
+    }
+
+    class Single extends System.Value
+    {
+        Type := "Float"
+    }
+
+    class USingle extends System.Value
+    {
+        Type := "UFloat"
+    }
+
+    class Double extends System.Value
+    {
+        Type := "Double"
+    }
+
+    class Boolean extends System.Value
+    {
+        Type := "Char"
+    }
+
+    class String extends System.Object
     {
         __new(offset32, offset64, parentObj)
         {
             this.Offset := MemoryReader.Reader.Is64Bit ? offset64 : offset32
             this.GetAddress := this.variableGetAddress
             this.ParentObj := parentObj
-            this.Length := new _MemoryObjects.Value(0x8, 0x10, this, "System.Int32")
+            this.Length := new System.Int32(0x8, 0x10, this)
             this.Value := {}
             this.Value.Offset := MemoryReader.Reader.Is64Bit ? 0x14 : 0xC
             return this
@@ -182,14 +224,15 @@ class _MemoryObjects
         }
     }
 
-    class Enum extends _MemoryObjects.Value
+    class Enum extends System.Value
     {
         __new(offset32, offset64, parentObject)
         {
-            this.isEnum := true ;this is hokey fix for tree view to differentiate enums from poiners, but I'm lazy right now.
+            this.isEnum := true ;this is hokey fix for tree view to differentiate enums from pointers, but I'm lazy right now.
             this.Offset := MemoryReader.Reader.Is64Bit ? offset64 : offset32
-            if !(_MemoryObjects.Value.genericTypeSize.HasKey(this.Type))
+            if !(System.genericTypeSize.HasKey(this.Type))
                 ExceptionHandler.ThrowError("Value type parameter is invalid.`nInvalid Parameter: " . this.Type, -2)
+            this.Type := System.genericTypeSize[this.Type]
             this.ParentObj := parentObject
             return this
         }
@@ -200,6 +243,18 @@ class _MemoryObjects
         }
     }
 
+    class Action extends System.Object
+    {
+
+    }
+
+    static genericTypeSize :=   {   "System.Byte": "Char",     "System.UByte": "UChar"
+                                    ,   "System.Short": "Short",   "System.UShort": "UShort"
+                                    ,   "System.Int32": "Int",     "System.UInt32": "UInt"
+                                    ,   "System.Int64": "Int64",   "System.UInt64": "UInt64"
+                                    ,   "System.Single": "Float",  "System.USingle": "UFloat"
+                                    ,   "System.Double": "Double", "System.Boolean": "Char"}
+
     class StaticBase
     {
         GetAddress()
@@ -208,13 +263,13 @@ class _MemoryObjects
         }
     }
 
-    class EffectKey extends _MemoryObjects.Reference
+    class EffectKey extends System.Object
     {
         __new()
         {
             this.Offset := 0
             this.GetAddress := this.variableGetAddress
-            this.ParentObj := new _MemoryObjects.EffectKeyParent(new IdleGameManager, this.ChampID, this.UpgradeID, this.EffectID, this)
+            this.ParentObj := new System.EffectKeyParent(new IdleGameManager, this.ChampID, this.UpgradeID, this.EffectID, this)
             return this
         }
         
@@ -233,7 +288,7 @@ class _MemoryObjects
         }
     }
 
-    class EffectKeyParent extends _MemoryObjects.Reference
+    class EffectKeyParent extends System.Object
     {
         __new(gameManager, champID, upgradeID, effectID, child)
         {

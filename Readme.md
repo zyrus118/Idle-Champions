@@ -10,16 +10,20 @@ Currently only works on Steam v425.1
 2. Test gem farm and add ons
 3. Update Dat Set Memory Structure for Steam and EGS and GameManager/Effect Keys for EGS.
 4. Figure out how to make a to do list auto number, or remove numbering.
-5. Finish Tree View Memory View
 6. Create add on for updating offsets
 7. Iterate on and refine changes
 8. Create new or modify existing docs for all changes
 9. Add support for EGS
+10. Rethink file convetion for memory structure files
 
 ## Known Issues
 1. To be discovered soon.
 
 ## Change Log
+
+4/14/22
+
+    Renamed memory structure base objects to align more closely to .NET naming convention
 
 4/10/22
 

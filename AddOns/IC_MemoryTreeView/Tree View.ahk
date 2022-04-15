@@ -215,22 +215,22 @@ class TV_MemoryView
             {
                 continue
             }
-            else if (v.__Class == "_MemoryObjects.List")
+            else if (v.__Class == "System.List")
             {
                 listID := this.CreateListChild(parentItemID, v, k)
                 this.TVdata[listID].Refresh()
             }
-            else if (v.__Class == "_MemoryObjects.Value")
-            {
-                itemID := this.CreateNumericChild(parentItemID, v, k)
-                this.TVdata[itemID].Refresh()
-            }
-            else if (v.__Class == "_MemoryObjects.String")
+            ;else if (v.__Class == "System.Value")
+            ;{
+            ;    itemID := this.CreateNumericChild(parentItemID, v, k)
+            ;    this.TVdata[itemID].Refresh()
+            ;}
+            else if (v.__Class == "System.String")
             {
                 sringID := this.CreateStringChild(parentItemID, v, k)
                 this.TVdata[stringID].Refresh()
             }
-            else if (v.__Class == "_MemoryObjects.Dictionary")
+            else if (v.__Class == "System.Dictionary")
             {
                 dictID := this.CreateDictChild(parentItemID, v, k)
                 this.TVdata[dictID].Refresh()
@@ -239,6 +239,12 @@ class TV_MemoryView
             {
                 enumID := this.CreateEnumChild(parentItemID, v, k)
                 this.TVdata[enumID].Refresh()
+            }
+            ;only numeric values should now have a type. enum is the only other
+            else if (v.Type)
+            {
+                itemID := this.CreateNumericChild(parentItemID, v, k)
+                this.TVdata[itemID].Refresh()
             }
             else
             {
@@ -305,16 +311,19 @@ class TV_MemoryView
 
     CreateCollectionChild(parentItemID, obj, key)
     {
-        if (obj.__Class == "_MemoryObjects.Value")
-            itemID := this.CreateNumericChild(parentItemID, obj, key)
-        else if (obj.__Class == "_MemoryObjects.String")
+        ;if (obj.__Class == "System.Value")
+        ;    itemID := this.CreateNumericChild(parentItemID, obj, key)
+        if (obj.__Class == "System.String")
             itemID := this.CreateStringChild(parentItemID, obj, key)
-        else if (obj.__Class == "_MemoryObjects.List")
+        else if (obj.__Class == "System.List")
             itemID := this.CreateListChild(parentItemID, obj, key)
-        else if (obj.__Class == "_MemoryObjects.Dictionary")
+        else if (obj.__Class == "System.Dictionary")
             itemID := this.CreateDictChild(parentItemID, obj, key)
         else if (obj.isEnum)
             itemID := this.CreateEnumChild(parentItemID, obj, key)
+        ;only numeric should now have a type, enum is only other
+        else if (obj.Type)
+            itemID := this.CreateNumericChild(parentItemID, obj, key)
         else
             itemID := this.CreatePointerChild(parentItemID, obj, key)
         return itemID

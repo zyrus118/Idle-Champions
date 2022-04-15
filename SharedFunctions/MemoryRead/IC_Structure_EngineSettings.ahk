@@ -4,12 +4,12 @@
 MemoryReader.CheckICactive()
 MemoryReader.Refresh()
 
-class Static_Base_CoreEngineSettings extends _MemoryObjects.StaticBase
+class Static_Base_CoreEngineSettings extends System.StaticBase
 {
     static Offset := MemoryReader.Reader.Is64Bit ? 0x493DC8 : 0x3A1C54
 }
 
-class CoreEngineSettings extends _MemoryObjects.Reference
+class CoreEngineSettings extends System.Object
 {
     __new()
     {
@@ -17,7 +17,7 @@ class CoreEngineSettings extends _MemoryObjects.Reference
         this.GetAddress := this.variableGetAddress
         this.ParentObj := Static_Base_CoreEngineSettings
         this.StaticOffset := MemoryReader.Reader.Is64Bit ? 0xF60 : 0xF88
-        this.WebRoot := new _MemoryObjects.String(this.StaticOffset + 0x8, this.StaticOffset + 0x10, this)
+        this.WebRoot := new System.String(this.StaticOffset + 0x8, this.StaticOffset + 0x10, this)
         return this
     }
 }
