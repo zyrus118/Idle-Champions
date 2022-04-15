@@ -4,7 +4,7 @@
 MemoryReader.CheckICactive()
 MemoryReader.Refresh()
 
-class Static_Base_GameSettings extends System.StaticBase
+class GameSettings_Parent extends System.StaticBase
 {
     static Offset := MemoryReader.Reader.Is64Bit ? 0x493E40 : 0x3AB064
 }
@@ -15,7 +15,7 @@ class GameSettings extends System.Object
     {
         this.Offset := MemoryReader.Reader.Is64Bit ? 0x820 : 0x408
         this.GetAddress := this.variableGetAddress
-        this.ParentObj := Static_Base_GameSettings
+        this.ParentObj := GameSettings_Parent
         this.StaticOffset := MemoryReader.Reader.Is64Bit ? 0xA80 : 0xE00
         this.UserID := new System.Int32(this.StaticOffset + 0x20, this.StaticOffset + 0x40, this)
         this.Hash := new System.String(this.StaticOffset + 0x28, this.StaticOffset + 0x48, this)

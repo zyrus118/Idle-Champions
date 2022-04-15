@@ -4,7 +4,7 @@
 MemoryReader.CheckICactive()
 MemoryReader.Refresh()
 
-class Static_Base_IdleGameManager extends System.StaticBase
+class IdleGameManager_Parent extends System.StaticBase
 {
     static Offset := MemoryReader.Reader.Is64Bit ? 0x0 : 0x3A0574
 }
@@ -20,7 +20,7 @@ class IdleGameManager extends GameManager
     {
         this.Offset := MemoryReader.Reader.Is64Bit ? 0x0 : 0x658
         this.GetAddress := this.variableGetAddress
-        this.ParentObj := Static_Base_IdleGameManager
+        this.ParentObj := IdleGameManager_Parent
         return this
     }
 }
@@ -52,10 +52,6 @@ class CrusadersGame
         instanceLoadTimeSinceLastSave := new System.Int32(0x8C, 0x0, this)
         ClickLevel := new System.Int32(0x98, 0x0, this)
         ;FE
-
-        ;notes
-        ;it appears timescales is no longer being used, so omttied for now.
-        ;not sure what instanceloadtimesincelastsave is used for, maybe not anymore
     }
 
     class Defs
@@ -84,7 +80,7 @@ class CrusadersGame
 
         class FormationSaveV2Def extends UnityGameEngine.Data.DataDef
         {
-            Formation := new System.List(0xC, 0, this, System.Int32, "System.Int32")
+            Formation := new System.List(0xC, 0, this, System.Int32)
             SaveID := new System.Int32(0x1C, 0, this)
             Name := new System.String(0x18, 0, this)
             Favorite := new System.Int32(0x24, 0, this)
@@ -116,7 +112,7 @@ class CrusadersGame
         class Effect extends System.Object
         {
             def := new CrusadersGame.Defs.EffectDef(0x8, 0, this)
-            effectKeyHandlers := new System.List(0x1C, 0x0, this, System.Object, CrusadersGame.Effects.EffectKeyHandler)
+            effectKeyHandlers := new System.List(0x1C, 0x0, this, CrusadersGame.Effects.EffectKeyHandler)
         }
 
         ;base object is System.Object
@@ -128,14 +124,14 @@ class CrusadersGame
         ;base object is System.Object
         class EffectKeyCollection extends System.Object
         {
-            effectKeysByKeyName := new System.Dictionary(0x2C, 0, this, System.String, "System.String", System.List, {"Base":System.Object, "Type":CrusadersGame.Effects.EffectKey})
+            effectKeysByKeyName := new System.Dictionary(0x2C, 0, this, System.String, [System.List, CrusadersGame.Effects.EffectKey])
         }
 
         ;base object is System.Object
         class EffectKeyHandler extends System.Object
         {
             parent := new CrusadersGame.Effects.Effect(0x8, 0, this)
-            activeEffectHandlers := new System.List(0x94, 0x0, this, System.Object, CrusadersGame.Effects.ActiveEffectKeyHandler)
+            activeEffectHandlers := new System.List(0x94, 0x0, this, CrusadersGame.Effects.ActiveEffectKeyHandler)
         }
 
         ;base object is System.Object
@@ -149,7 +145,7 @@ class CrusadersGame
     {
         ;CrusadersGame.Game-FIELDS
         gameUser := new UnityGameEngine.UserLogin.GameUser(0x54, 0x0, this)
-        gameInstances := new System.List(0x58, 0x00, this, System.Object, CrusadersGame.ChampionsGameInstance)
+        gameInstances := new System.List(0x58, 0x00, this, CrusadersGame.ChampionsGameInstance)
         gameStarted := new System.Boolean(0x7C, 0x0, this)
     }
 
@@ -167,7 +163,7 @@ class CrusadersGame
 
         class Area extends System.Object
         {
-            activeMonsters := new System.List(0x24, 0, this, System.Object, CrusadersGame.GameScreen.Monster)
+            activeMonsters := new System.List(0x24, 0, this, CrusadersGame.GameScreen.Monster)
             Active := new System.Boolean(0xF4, 0, this)
             secondsSinceStarted := new System.Single(0x114, 0, this)
             basicMonstersSapwnedThisArea := new System.Int32(0x150, 0, this)
@@ -208,8 +204,8 @@ class CrusadersGame
 
         class Formation extends System.Object
         {
-            slots := new System.List(0xC, 0, this, System.Object, CrusadersGame.GameScreen.FormationSlot)
-            transitionOverrides := new System.Dictionary(0x54, 0, this, System.Enum, CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection, System.List, System.Action)
+            slots := new System.List(0xC, 0, this, CrusadersGame.GameScreen.FormationSlot)
+            transitionOverrides := new System.Dictionary(0x54, 0, this, CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection, [System.List, System.Action])
             transitionDir := new CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection(0xE0, 0, this)
             inAreaTransition := new System.Boolean(0xE4, 0, this)
             numAttackingMonstersReached := new System.Int32(0xEC, 0, this)
@@ -240,8 +236,8 @@ class CrusadersGame
             ;CrusadersGame.GameScreen.Hero-FIELDS
             def := new CrusadersGame.Defs.HeroDef(0xC, 0x00, this)
             effects := new CrusadersGame.Effects.EffectKeyCollection(0x40, 0, this)
-            allUpgradesOrdered := new System.Dictionary(0x10C, 0, this, System.Object, CrusadersGame.ChampionsGameInstance, System.List, {"Base":System.Object, "Type":CrusadersGame.Defs.UpgradeDef})
-            effectsByUpgradeId := new System.Dictionary(0x11C, 0x0, this, System.Int32, "System.Int32", System.List, {"Base":System.Object, "Type":CrusadersGame.Effects.Effect})
+            allUpgradesOrdered := new System.Dictionary(0x10C, 0, this, CrusadersGame.ChampionsGameInstance, [System.List, CrusadersGame.Defs.UpgradeDef])
+            effectsByUpgradeId := new System.Dictionary(0x11C, 0x0, this, System.Int32, [System.List, CrusadersGame.Effects.Effect])
             Owned := new System.Boolean(0x180, 0, this)
             slotID := new System.Int32(0x184, 0x00, this)
             Benched := new System.Boolean(0x190, 0, this)
@@ -282,7 +278,7 @@ class CrusadersGame
             {
                 class UltimatesBar extends UnityGameEngine.Display.Drawable
                 {
-                    ultimateItems := new System.List(0x260, 0, this, System.Object, CrusadersGame.GameScreen.UIComponents.UltimatesBar.UltimatesBarItem)
+                    ultimateItems := new System.List(0x260, 0, this, CrusadersGame.GameScreen.UIComponents.UltimatesBar.UltimatesBarItem)
                 }
 
                 class UltimatesBarItem extends UnityGameEngine.Display.Drawable
@@ -345,7 +341,7 @@ class CrusadersGame
         class UserHeroHandler extends System.Object
         {
             ;CrusadersGame.User.UserHeroHandler-FIELDS
-            heroes := new System.List(0xC, 0x00, this, System.Object, CrusadersGame.GameScreen.Hero)
+            heroes := new System.List(0xC, 0x00, this, CrusadersGame.GameScreen.Hero)
         }
         
         class UserDataHandler extends System.Object
@@ -355,19 +351,19 @@ class CrusadersGame
 
         class UserInstanceFormationSaveHandler extends CrusadersGame.User.UserDataHandler
         {
-            formationSavesV2 := new System.List(0x18, 0, this, System.Object, CrusadersGame.Defs.FormationSaveV2Def)
+            formationSavesV2 := new System.List(0x18, 0, this, CrusadersGame.Defs.FormationSaveV2Def)
             formationCampaignID := new System.Int32(0x40, 0, this)
         }
 
         class UserModronHandler extends CrusadersGame.User.UserDataHandler
         {
-            modronSaves := new System.List(0x10, 0, this, System.Object, CrusadersGame.User.UserModronHandler.ModronCoreData)
+            modronSaves := new System.List(0x10, 0, this, CrusadersGame.User.UserModronHandler.ModronCoreData)
 
             class ModronCoreData extends System.Object
             {
                 ;ahk: CrusadersGame.User.UserModronHandler.ModronCoreData
                 ;mono: CrusadersGame.User.UserModronHandler+ModronCoreData
-                FormationSaves := new System.Dictionary(0xC, 0, this, System.Int32, "System.Int32", System.Int32, "System.Int32")
+                FormationSaves := new System.Dictionary(0xC, 0, this, System.Int32, System.Int32)
                 CoreID := new System.Int32(0x24, 0, this)
                 InstanceID := new System.Int32(0x28, 0, this)
                 ExpTotal := new System.Int32(0x2C, 0, this)

@@ -17,10 +17,15 @@ Currently only works on Steam v425.1
 10. Rethink file convetion for memory structure files
 
 ## Known Issues
-1. To be discovered soon.
+1. Azaka, NERDs, and No Modron Leveling add ons are broken.
+2. EGS not supported. (hopefully soon)
 
 ## Change Log
 
+4/15/22
+
+    Additional reorganization of memory structure base objects.
+    
 4/14/22
 
     Renamed memory structure base objects to align more closely to .NET naming convention
