@@ -1,26 +1,20 @@
-#include %A_LineFile%\..\IC_MemoryReader_Class.ahk
-#include %A_LineFile%\..\IC_MemoryObjects_Class.ahk
-;so we can pick the Steam or EGS offset on initialization of script.
-MemoryReader.CheckICactive()
-MemoryReader.Refresh()
-
 class IdleGameManager_Parent extends System.StaticBase
 {
-    static Offset := MemoryReader.Reader.Is64Bit ? 0x0 : 0x3A0574
+    Offset := MemoryReader.Reader.isTarget64bit ? 0x491A90 : 0x3A0574
 }
 
 ;instance := new IdleGameManager
 class IdleGameManager extends GameManager
 {
     ;FB-IdleGameManager
-    game := new CrusadersGame.Game(0xA0, 0x00, this)
+    game := new CrusadersGame.Game(160, 216, this)
     ;FE
     
     __new()
     {
-        this.Offset := MemoryReader.Reader.Is64Bit ? 0x0 : 0x658
+        this.Offset := MemoryReader.Reader.isTarget64bit ? 0xC88 : 0x658
         this.GetAddress := this.variableGetAddress
-        this.ParentObj := IdleGameManager_Parent
+        this.ParentObj := new IdleGameManager_Parent
         return this
     }
 }
@@ -29,28 +23,26 @@ class IdleGameManager extends GameManager
 class GameManager extends System.Object
 {
     ;FB-GameManager
-    TimeScale := new System.Single(0x48, 0x0, this)
+    TimeScale := new System.Single(72, 128, this)
     ;FE
 }
 
 class CrusadersGame
 {
-    ;base object is System.Object
     class ChampionsGameInstance extends System.Object
     {
         ;FB-CrusadersGame.ChampionsGameInstance
-        ;screen may be superflous with screenController also in Game
-        Screen := new CrusadersGame.GameScreen.CrusadersGameScreen(0x8, 0x0, this)
-        Controller := new CrusadersGame.GameScreen.CrusadersGameController(0xC, 0x0, this)
-        ActiveCampaignData := new CrusadersGame.GameScreen.ActiveCampaignData(0x10, 0x0, this)
-        HeroHandler := new CrusadersGame.User.Instance.UserInstanceHeroHandler(0x14, 0x00, this)
-        ResetHandler := new CrusadersGame.User.Instance.UserInstanceResetHandler(0x1C, 0x0, this)
-        PatronHandler := new CrusadersGame.User.Instance.UserInstancePatronHandler(0x28, 0x0, this)
-        FormationSaveHandler := new CrusadersGame.User.UserInstanceFormationSaveHandler(0x30, 0x0, this)
-        offlineProgressHandler := new OfflineProgressHandler(0x40, 0x0, this)
-        ResetsSinceLastManual := new System.Int32(0x84, 0x0, this)
-        instanceLoadTimeSinceLastSave := new System.Int32(0x8C, 0x0, this)
-        ClickLevel := new System.Int32(0x98, 0x0, this)
+        Screen := new CrusadersGame.GameScreen.CrusadersGameScreen(8, 16, this)
+        Controller := new CrusadersGame.GameScreen.CrusadersGameController(12, 24, this)
+        ActiveCampaignData := new CrusadersGame.GameScreen.ActiveCampaignData(16, 32, this)
+        HeroHandler := new CrusadersGame.User.Instance.UserInstanceHeroHandler(20, 40, this)
+        ResetHandler := new CrusadersGame.User.Instance.UserInstanceResetHandler(28, 56, this)
+        PatronHandler := new CrusadersGame.User.Instance.UserInstancePatronHandler(40, 80, this)
+        FormationSaveHandler := new CrusadersGame.User.UserInstanceFormationSaveHandler(48, 96, this)
+        offlineProgressHandler := new OfflineProgressHandler(64, 128, this)
+        ResetsSinceLastManual := new System.Int32(136, 268, this)
+        instanceLoadTimeSinceLastSave := new System.Int32(144, 276, this)
+        ClickLevel := new System.Int32(156, 288, this)
         ;FE
     }
 
@@ -63,7 +55,9 @@ class CrusadersGame
 
         class AttackDef extends UnityGameEngine.Data.DataDef
         {
-            CooldownTimer := new System.Single(0x74, 0xAC, this)
+            ;FB-CrusadersGame.Defs.AttackDef
+            CooldownTimer := new System.Single(120, 176, this)
+            ;FE
         }
 
         class EffectDef extends UnityGameEngine.Data.DataDef
@@ -73,113 +67,136 @@ class CrusadersGame
 
         class HeroDef extends UnityGameEngine.Data.DataDef
         {
-            ;CrusadersGame.Defs.HeroDef-FIELDS
-            name := new System.String(0x18, 0x0, this)
-            SeatID := new System.Int32(0xF8, 0, this)
+            ;FB-CrusadersGame.Defs.HeroDef
+            name := new System.String(24, 48, this)
+            SeatID := new System.Int32(248, 384, this)
+            ;FE
         }
 
         class FormationSaveV2Def extends UnityGameEngine.Data.DataDef
         {
-            Formation := new System.List(0xC, 0, this, System.Int32)
-            SaveID := new System.Int32(0x1C, 0, this)
-            Name := new System.String(0x18, 0, this)
-            Favorite := new System.Int32(0x24, 0, this)
+            ;FB-CrusadersGame.Defs.FormationSaveV2Def
+            Formation := new System.List(12, 24, this, System.Int32)
+            SaveID := new System.Int32(28, 56, this)
+            Name := new System.String(24, 48, this)
+            Favorite := new System.Int32(36, 64, this)
+            ;FE
         }
 
         class PatronDef extends UnityGameEngine.Data.DataDef
         {
-            Tier := new System.Int32(0x70, 0, this)
+            ;FB-CrusadersGame.Defs.PatronDef
+            Tier := new System.Int32(112, 192, this)
+            ;FE
         }
 
         class UpgradeDef extends UnityGameEngine.Data.DataDef
         {
-            SpecializationName := new System.String(0x20, 0, this)
-            RequiredLevel := new System.Int32(0x4C, 0, this)
-            RequiredUpgradeID := new System.Int32(0x54, 0, this)
-            SpecializationGraphic := new System.Int32(0x58, 0, this)
+            ;FB-CrusadersGame.Defs.UpgradeDef
+            SpecializationName := new System.String(32, 64, this)
+            RequiredLevel := new System.Int32(76, 124, this)
+            RequiredUpgradeID := new System.Int32(84, 132, this)
+            SpecializationGraphic := new System.Int32(88, 136, this)
+            ;FE
         }
     }
 
     class Effects
     {
-        ;base object is System.Object
         class ActiveEffectKeyHandler extends System.Object
         {
 
         }
 
-        ;base object is System.Object
+
         class Effect extends System.Object
         {
-            def := new CrusadersGame.Defs.EffectDef(0x8, 0, this)
-            effectKeyHandlers := new System.List(0x1C, 0x0, this, CrusadersGame.Effects.EffectKeyHandler)
+            ;FB-CrusadersGame.Effects.Effect
+            def := new CrusadersGame.Defs.EffectDef(8, 16, this)
+            effectKeyHandlers := new System.List(28, 56, this, CrusadersGame.Effects.EffectKeyHandler)
+            ;FE
         }
 
-        ;base object is System.Object
+
         class EffectKey extends System.Object
         {
-            parentEffectKeyHandler := new CrusadersGame.Effects.EffectKeyHandler(0x8, 0, this)
+            ;FB-CrusadersGame.Effects.EffectKey
+            parentEffectKeyHandler := new CrusadersGame.Effects.EffectKeyHandler(8, 16, this)
+            ;FE
         }
 
-        ;base object is System.Object
+
         class EffectKeyCollection extends System.Object
         {
-            effectKeysByKeyName := new System.Dictionary(0x2C, 0, this, System.String, [System.List, CrusadersGame.Effects.EffectKey])
+            ;FB-CrusadersGame.Effects.EffectKeyCollection
+            effectKeysByKeyName := new System.Dictionary(44, 88, this, System.String, [System.List, CrusadersGame.Effects.EffectKey])
+            ;FE
         }
 
-        ;base object is System.Object
+
         class EffectKeyHandler extends System.Object
         {
-            parent := new CrusadersGame.Effects.Effect(0x8, 0, this)
-            activeEffectHandlers := new System.List(0x94, 0x0, this, CrusadersGame.Effects.ActiveEffectKeyHandler)
+            ;FB-CrusadersGame.Effects.EffectKeyHandler
+            parent := new CrusadersGame.Effects.Effect(8, 16, this)
+            activeEffectHandlers := new System.List(148, 296, this, CrusadersGame.Effects.ActiveEffectKeyHandler)
+            ;FE
         }
 
-        ;base object is System.Object
+
         class EffectStacks extends System.Object
         {
-            stackCount := new System.Double(0x58, 0, this)
+            ;FB-CrusadersGame.Effects.EffectStacks
+            stackCount := new System.Double(88, 152, this)
+            ;FE
         }
     }
 
     class Game extends UnityGameEngine.GameBase
     {
-        ;CrusadersGame.Game-FIELDS
-        gameUser := new UnityGameEngine.UserLogin.GameUser(0x54, 0x0, this)
-        gameInstances := new System.List(0x58, 0x00, this, CrusadersGame.ChampionsGameInstance)
-        gameStarted := new System.Boolean(0x7C, 0x0, this)
+        ;FB-CrusadersGame.Game
+        gameUser := new UnityGameEngine.UserLogin.GameUser(84, 168, this)
+        gameInstances := new System.List(88, 176, this, CrusadersGame.ChampionsGameInstance)
+        gameStarted := new System.Boolean(124, 248, this)
+        ;FE
     }
 
     class GameScreen
     {
         class ActiveCampaignData extends System.Object
         {
-            currentObjective := new CrusadersGame.Defs.AdventureDef(0xC, 0, this)
-            currentArea := new CrusadersGame.GameScreen.AreaLevel(0x14, 0, this)
-            currentAreaID := new System.Int32(0x44, 0, this)
-            highestAvailableAreaID := new System.Int32(0x4C, 0, this)
-            ;override Engine.Value.Quad type
-            gold := new System.Int64(0x210, 0, this)
+            ;FB-CrusadersGame.GameScreen.ActiveCampaignData
+            currentObjective := new CrusadersGame.Defs.AdventureDef(12, 24, this)
+            currentArea := new CrusadersGame.GameScreen.AreaLevel(20, 40, this)
+            currentAreaID := new System.Int32(68, 136, this)
+            highestAvailableAreaID := new System.Int32(76, 144, this)
+            gold := new System.Int64(528, 600, this) ;OR-TYPE
+            ;FE
         }
 
         class Area extends System.Object
         {
-            activeMonsters := new System.List(0x24, 0, this, CrusadersGame.GameScreen.Monster)
-            Active := new System.Boolean(0xF4, 0, this)
-            secondsSinceStarted := new System.Single(0x114, 0, this)
-            basicMonstersSapwnedThisArea := new System.Int32(0x150, 0, this)
+            ;FB-CrusadersGame.GameScreen.Area
+            activeMonsters := new System.List(36, 72, this, CrusadersGame.GameScreen.Monster)
+            Active := new System.Boolean(244, 480, this)
+            secondsSinceStarted := new System.Single(276, 516, this)
+            basicMonstersSpawnedThisArea := new System.Int32(336, 576, this)
+            ;FE
         }
 
         class AreaLevel extends System.Object
         {
-            level := new System.Int32(0x28, 0, this)
-            QuestRemaining := new System.Int32(0x30, 0, this)
+            ;FB-CrusadersGame.GameScreen.AreaLevel
+            level := new System.Int32(40, 76, this)
+            QuestRemaining := new System.Int32(48, 84, this)
+            ;FE
         }
 
         class AreaTransitioner extends System.Object
         {
-            ;k__BackingField
-            IsTransitioning := new System.Boolean(0x1C, 0, this)
-            transitionDirection := new CrusadersGame.GameScreen.AreaTransitioner.AreaTransitionDirection(0x20, 0, this)
+            ;FB-CrusadersGame.GameScreen.AreaTransitioner
+            IsTransitioning := new System.Boolean(28, 56, this)
+            transitionDirection := new CrusadersGame.GameScreen.AreaTransitioner.AreaTransitionDirection(32, 60, this)
+            ;FE
 
             class AreaTransitionDirection extends System.Enum
             {
@@ -190,26 +207,31 @@ class CrusadersGame
 
         class CrusadersGameController extends System.Object
         {
-            ;CrusadersGame.GameScreen.CrusadersGameController-FIELDS
-            area := new CrusadersGame.GameScreen.Area(0xC, 0x0, this)
-            formation := new CrusadersGame.GameScreen.Formation(0x14, 0x0, this)
-            areaTransitioner := new CrusadersGame.GameScreen.AreaTransitioner(0x20, 0x0, this)
-            userData := new CrusadersGame.User.UserData(0x50, 0x0, this)
+            ;FB-CrusadersGame.GameScreen.CrusadersGameController
+            area := new CrusadersGame.GameScreen.Area(12, 24, this)
+            formation := new CrusadersGame.GameScreen.Formation(20, 40, this)
+            areaTransitioner := new CrusadersGame.GameScreen.AreaTransitioner(32, 64, this)
+            userData := new CrusadersGame.User.UserData(80, 160, this)
+            ;FE
         }
 
         class CrusadersGameScreen extends UnityGameEngine.GameScreenController.GameScreen
         {
-            uiController := new CrusadersGame.GameScreen.UIController(0x270, 0x0, this)
+            ;FB-CrusadersGame.GameScreen.CrusadersGameScreen
+            uiController := new CrusadersGame.GameScreen.UIController(624, 936, this)
+            ;FE
         }
 
         class Formation extends System.Object
         {
-            slots := new System.List(0xC, 0, this, CrusadersGame.GameScreen.FormationSlot)
-            transitionOverrides := new System.Dictionary(0x54, 0, this, CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection, [System.List, System.Action])
-            transitionDir := new CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection(0xE0, 0, this)
-            inAreaTransition := new System.Boolean(0xE4, 0, this)
-            numAttackingMonstersReached := new System.Int32(0xEC, 0, this)
-            numRangedAttackingMonsters := new System.Int32(0xF0, 0, this)
+            ;FB-CrusadersGame.GameScreen.Formation
+            slots := new System.List(12, 24, this, CrusadersGame.GameScreen.FormationSlot)
+            transitionOverrides := new System.Dictionary(84, 168, this, CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection, [System.ListSystem.Action<System.Action])
+            transitionDir := new CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection(224, 396, this)
+            inAreaTransition := new System.Boolean(228, 400, this)
+            numAttackingMonstersReached := new System.Int32(236, 408, this)
+            numRangedAttackingMonsters := new System.Int32(240, 412, this)
+            ;FE
         }
 
         class Formations
@@ -226,29 +248,33 @@ class CrusadersGame
 
         class FormationSlot extends System.Object
         {
-            hero := new CrusadersGame.GameScreen.Hero(0x14, 0, this)
-            heroAlive := new System.Boolean(0x151, 0, this)
+            ;FB-CrusadersGame.GameScreen.FormationSlot
+            hero := new CrusadersGame.GameScreen.Hero(20, 40, this)
+            heroAlive := new System.Boolean(337, 593, this)
+            ;FE
         }
 
-        ;base object is System.Object
+
         class Hero extends System.Object
         {
-            ;CrusadersGame.GameScreen.Hero-FIELDS
-            def := new CrusadersGame.Defs.HeroDef(0xC, 0x00, this)
-            effects := new CrusadersGame.Effects.EffectKeyCollection(0x40, 0, this)
-            allUpgradesOrdered := new System.Dictionary(0x10C, 0, this, CrusadersGame.ChampionsGameInstance, [System.List, CrusadersGame.Defs.UpgradeDef])
-            effectsByUpgradeId := new System.Dictionary(0x11C, 0x0, this, System.Int32, [System.List, CrusadersGame.Effects.Effect])
-            Owned := new System.Boolean(0x180, 0, this)
-            slotID := new System.Int32(0x184, 0x00, this)
-            Benched := new System.Boolean(0x190, 0, this)
-            ;k__Backingfield
-            Level := new System.Int32(0x1AC, 0x00, this)
-            health := new System.Double(0x1E0, 0, this)
+            ;FB-CrusadersGame.GameScreen.Hero
+            def := new CrusadersGame.Defs.HeroDef(12, 24, this)
+            effects := new CrusadersGame.Effects.EffectKeyCollection(64, 128, this)
+            allUpgradesOrdered := new System.Dictionary(268, 536, this, CrusadersGame.ChampionsGameInstance, [System.List, CrusadersGame.Defs.UpgradeDef])
+            effectsByUpgradeId := new System.Dictionary(284, 568, this, System.Int32, [System.List, CrusadersGame.Effects.Effect])
+            Owned := new System.Boolean(384, 748, this)
+            slotID := new System.Int32(388, 752, this)
+            Benched := new System.Boolean(400, 764, this)
+            Level := new System.Int32(428, 792, this)
+            health := new System.Double(480, 848, this)
+            ;FE
         }
 
         class Monster extends UnityGameEngine.Display.Drawable
         {
-            active := new System.Boolean(0x73D, 0, this)
+            ;FB-CrusadersGame.GameScreen.Monster
+            active := new System.Boolean(1865, 2601, this)
+            ;FE
         }
 
         class UIComponents
@@ -259,18 +285,24 @@ class CrusadersGame
                 ;{
                     class AreaLevelBar extends UnityGameEngine.Display.Drawable
                     {
-                        autoProgressButton := new UnityGameEngine.Display.DrawableButton(0x240, 0, this)
+                        ;FB-CrusadersGame.GameScreen.UIComponents.TopBar.ObjectiveProgress.AreaLevelBar
+                        autoProgressButton := new UnityGameEngine.Display.DrawableButton(576, 848, this)
+                        ;FE
                     }
 
                     class ObjectiveProgressBox extends UnityGameEngine.Display.Drawable
                     {
-                        areaBar := new CrusadersGame.GameScreen.UIComponents.TopBar.AreaLevelBar(0x258, 0, this) ;.ObjectiveProgress.AreaLevelBar(0x250, 0, this)
+                        ;FB-CrusadersGame.GameScreen.UIComponents.TopBar.ObjectiveProgress.ObjectiveProgressBox
+                        areaBar := new CrusadersGame.GameScreen.UIComponents.TopBar.AreaLevelBar(600, 896, this) ;OR-TYPE
+                        ;FE
                     }
                 ;}
 
                 class TopBar extends UnityGameEngine.Display.Drawable
                 {
-                    objectiveProgressBox := new CrusadersGame.GameScreen.UIComponents.TopBar.ObjectiveProgressBox(0x24C, 0, this) ;ObjectiveProgress.ObjectiveProgressBox(0x234, 0, this)
+                    ;FB-CrusadersGame.GameScreen.UIComponents.TopBar.TopBar
+                    objectiveProgressBox := new CrusadersGame.GameScreen.UIComponents.TopBar.ObjectiveProgressBox(572, 840, this) ;OR-TYPE
+                    ;FE
                 }
             }
 
@@ -278,23 +310,27 @@ class CrusadersGame
             {
                 class UltimatesBar extends UnityGameEngine.Display.Drawable
                 {
-                    ultimateItems := new System.List(0x260, 0, this, CrusadersGame.GameScreen.UIComponents.UltimatesBar.UltimatesBarItem)
+                    ;FB-CrusadersGame.GameScreen.UIComponents.UltimatesBar.UltimatesBar
+                    ultimateItems := new System.List(608, 912, this, CrusadersGame.GameScreen.UIComponents.UltimatesBar.UltimatesBarItem)
+                    ;FE
                 }
 
                 class UltimatesBarItem extends UnityGameEngine.Display.Drawable
                 {
-                    hero := new CrusadersGame.GameScreen.Hero(0x258, 0, this)
+                    ;FB-CrusadersGame.GameScreen.UIComponents.UltimatesBar.UltimatesBarItem
+                    hero := new CrusadersGame.GameScreen.Hero(600, 896, this)
+                    ;FE
                 }
             }
         }
 
-        ;base object is System.Object
+
         class UIController extends System.Object
         {
-            topBar := new CrusadersGame.GameScreen.UIComponents.TopBar.TopBar(0xC, 0, this)
-            ;will replace the need for this read
-            ;bottomBar := new CrusadersGame.GameScreen.UIComponents.BottomBar.BottomBar(0x10, 0, this)
-            ultimatesBar := new CrusadersGame.GameScreen.UIComponents.UltimatesBar.UltimatesBar(0x14, 0, this)
+            ;FB-CrusadersGame.GameScreen.UIController
+            topBar := new CrusadersGame.GameScreen.UIComponents.TopBar.TopBar(12, 24, this)
+            ultimatesBar := new CrusadersGame.GameScreen.UIComponents.UltimatesBar.UltimatesBar(20, 40, this)
+            ;FE
         }
     }
 
@@ -309,39 +345,46 @@ class CrusadersGame
 
             class UserInstanceHeroHandler extends CrusadersGame.User.Instance.UserInstanceDataHandler
             {
-                ;CrusadersGame.User.Instance.UserInstanceHeroHandler-FIELDS
-                parent := new CrusadersGame.User.UserHeroHandler(0x24, 0x00, this)
+                ;FB-CrusadersGame.User.Instance.UserInstanceHeroHandler
+                parent := new CrusadersGame.User.UserHeroHandler(36, 72, this)
+                ;FE
             }
 
             class UserInstancePatronHandler extends CrusadersGame.User.Instance.UserInstanceDataHandler
             {
-                ;k__BackingField
-                ActivePatron := new CrusadersGame.Defs.PatronDef(0x10, 0, this)
+                ;FB-CrusadersGame.User.Instance.UserInstancePatronHandler
+                ActivePatron := new CrusadersGame.Defs.PatronDef(16, 32, this)
+                ;FE
             }
 
             class UserInstanceResetHandler extends CrusadersGame.User.Instance.UserInstanceDataHandler
             {
-                resetting := new System.Boolean(0x1C, 0, this)
-                tries := new System.Int32(0x20, 0, this)
+                ;FB-CrusadersGame.User.Instance.UserInstanceResetHandler
+                resetting := new System.Boolean(28, 56, this)
+                tries := new System.Int32(32, 60, this)
+                ;FE
             }
         }
 
         class UserData extends System.Object
         {
-            HeroHandler := new CrusadersGame.User.UserHeroHandler(0x8, 0, this)
-            StatHandler := new CrusadersGame.User.UserStatHandler(0x18, 0, this)
-            ModronHandler := new CrusadersGame.User.UserModronHandler(0x6C, 0, this)
-            redRubies := new System.Int32(0x134, 0, this)
-            redRubiesSpent := new System.Int32(0x138, 0, this)
-            inited := new System.Boolean(0x150, 0, this)
-            ActiveUserGameInstance := new System.Int32(0x164, 0, this)
+            ;FB-CrusadersGame.User.UserData
+            HeroHandler := new CrusadersGame.User.UserHeroHandler(8, 16, this)
+            StatHandler := new CrusadersGame.User.UserStatHandler(24, 48, this)
+            ModronHandler := new CrusadersGame.User.UserModronHandler(108, 216, this)
+            redRubies := new System.Int32(308, 556, this)
+            redRubiesSpent := new System.Int32(312, 560, this)
+            inited := new System.Boolean(336, 584, this)
+            ActiveUserGameInstance := new System.Int32(356, 604, this)
+            ;FE
         }
 
         ;base object only includes parent (User), so recursive... maybe
         class UserHeroHandler extends System.Object
         {
-            ;CrusadersGame.User.UserHeroHandler-FIELDS
-            heroes := new System.List(0xC, 0x00, this, CrusadersGame.GameScreen.Hero)
+            ;FB-CrusadersGame.User.UserHeroHandler
+            heroes := new System.List(12, 24, this, CrusadersGame.GameScreen.Hero)
+            ;FE
         }
         
         class UserDataHandler extends System.Object
@@ -351,41 +394,49 @@ class CrusadersGame
 
         class UserInstanceFormationSaveHandler extends CrusadersGame.User.UserDataHandler
         {
-            formationSavesV2 := new System.List(0x18, 0, this, CrusadersGame.Defs.FormationSaveV2Def)
-            formationCampaignID := new System.Int32(0x40, 0, this)
+            ;FB-CrusadersGame.User.UserInstanceFormationSaveHandler
+            formationSavesV2 := new System.List(24, 48, this, CrusadersGame.Defs.FormationSaveV2Def)
+            formationCampaignID := new System.Int32(64, 128, this)
+            ;FE
         }
 
         class UserModronHandler extends CrusadersGame.User.UserDataHandler
         {
-            modronSaves := new System.List(0x10, 0, this, CrusadersGame.User.UserModronHandler.ModronCoreData)
+            ;FB-CrusadersGame.User.UserModronHandler
+            modronSaves := new System.List(16, 32, this, CrusadersGame.User.UserModronHandler.ModronCoreData)
+            ;FE
 
             class ModronCoreData extends System.Object
             {
-                ;ahk: CrusadersGame.User.UserModronHandler.ModronCoreData
-                ;mono: CrusadersGame.User.UserModronHandler+ModronCoreData
-                FormationSaves := new System.Dictionary(0xC, 0, this, System.Int32, System.Int32)
-                CoreID := new System.Int32(0x24, 0, this)
-                InstanceID := new System.Int32(0x28, 0, this)
-                ExpTotal := new System.Int32(0x2C, 0, this)
-                targetArea := new System.Int32(0x30, 0, this)
+                ;FB-CrusadersGame.User.UserModronHandler+ModronCoreData
+                FormationSaves := new System.Dictionary(12, 24, this, System.Int32, System.Int32)
+                CoreID := new System.Int32(36, 72, this)
+                InstanceID := new System.Int32(40, 76, this)
+                ExpTotal := new System.Int32(44, 80, this)
+                targetArea := new System.Int32(48, 84, this)
+                ;FE
             }
         }
 
         class UserStatHandler extends CrusadersGame.User.UserDataHandler
         {
-            BlackViperTotalGems := new System.Int32(0x268, 0, this)
-            BrivSteelbonesStacks := new System.Int32(0x2C8, 0, this)
-            BrivSprintStacks := new System.Int32(0x2CC, 0, this)
+            ;FB-CrusadersGame.User.UserStatHandler
+            BlackViperTotalGems := new System.Int32(616, 664, this)
+            BrivSteelbonesStacks := new System.Int32(712, 760, this)
+            BrivSprintStacks := new System.Int32(716, 764, this)
+            ;FE
         }
     }
 }
 
 class OfflineProgressHandler extends System.Object
 {
-    modronSave := new CrusadersGame.User.UserModronHandler.ModronCoreData(0x20, 0, this)
-    monstersSpawnedThisArea := new System.Int32(0xA0, 0, this)
-    inGameNumSecondsToProcess := new System.Int32(0xB4, 0, this)
-    finishedOfflineProgressType := new OfflineProgressHandler.OfflineCompleteType(0x10C, 0, this)
+    ;FB-OfflineProgressHandler
+    modronSave := new CrusadersGame.User.UserModronHandler.ModronCoreData(32, 64, this)
+    monstersSpawnedThisArea := new System.Int32(160, 216, this)
+    inGameNumSecondsToProcess := new System.Int32(180, 236, this)
+    finishedOfflineProgressType := new OfflineProgressHandler.OfflineCompleteType(268, 324, this)
+    ;FE
 
     class OfflineCompleteType extends System.Enum
     {
@@ -398,48 +449,52 @@ class UnityGameEngine
 {
     class Data
     {
-        ;base object is System.Object
         class DataDef extends System.Object
         {
-            ;UnityGameEngine.Data.DataDef-FIELDS
-            ID := new System.Int32(0x8, 0x00, this)
+            ;FB-UnityGameEngine.Data.DataDef
+            ID := new System.Int32(8, 16, this)
+            ;FE
         }
     }
 
     class Display
     {
-        
         class DrawableButton extends UnityGameEngine.Display.Drawable
         {
-            toggled := new System.Boolean(0x27A, 0, this)
+            ;FB-UnityGameEngine.Display.DrawableButton
+            toggled := new System.Boolean(634, 930, this)
+            ;FE
         }
 
-        ;base object is System.Object
+
         class Drawable extends System.Object
         {
 
         }
     }
 
-    ;base object is System.Object
     class GameBase extends System.Object
     {
-        ;UnityGameEngine.GameBase-FIELDS
-        screenController := new UnityGameEngine.GameScreenController.ScreenController(0x8, 0x0, this)
+        ;FB-UnityGameEngine.GameBase
+        screenController := new UnityGameEngine.GameScreenController.ScreenController(8, 16, this)
+        ;FE
     }
 
     class GameScreenController
     {
         class GameScreen extends System.Object
         {
-            currentScreenWidth := new System.Int32(0x23C, 0x0, this)
-            currentScreenHeight := new System.Int32(0x240, 0x0, this)
+            ;FB-UnityGameEngine.GameScreenController.GameScreen
+            currentScreenWidth := new System.Int32(572, 836, this)
+            currentScreenHeight := new System.Int32(576, 840, this)
+            ;FE
         }
 
-        ;need to figure out how to have this also look at crusadersGameScreen class to get uiController and other items
         class ScreenController extends System.Object
         {
-            activeScreen := new UnityGameEngine.GameScreenController.GameScreen(0xC, 0x0, this)
+            ;FB-UnityGameEngine.GameScreenController.ScreenController
+            activeScreen := new CrusadersGame.GameScreen.CrusadersGameScreen(12, 24, this)  ;OR-TYPE
+            ;FE
         }
     }
 
@@ -447,8 +502,11 @@ class UnityGameEngine
     {
         class GameUser extends System.Object
         {
-            Hash := new System.String(0x10, 0, this)
-            ID := new System.Int32(0x30, 0, this)
+            ;FB-UnityGameEngine.UserLogin.GameUser
+            Hash := new System.String(16, 32, this)
+            ID := new System.Int32(48, 88, this)
+            ;FE
         }
     }
 }
+;Processing Time (minutes): 0.615617

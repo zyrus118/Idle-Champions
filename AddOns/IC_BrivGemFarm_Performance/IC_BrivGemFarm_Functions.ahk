@@ -139,7 +139,7 @@ class IC_BrivGemFarm_Class
         if(g_SF.VerifyAdventureLoaded() < 0)
             return
         g_SF.CurrentAdventure := g_SF.Memory.ReadCurrentObjID()
-        g_SF.ResetServerCall()
+        g_ServerCall := new IC_BrivServerCall_Class()
         g_SF.GameStartFormation := g_BrivUserSettings[ "BrivJumpBuffer" ] > 0 ? 3 : 1
         g_SaveHelper.Init() ; slow call, loads briv dictionary (3+s)
         formationModron := g_SF.Memory.GetActiveModronFormation()

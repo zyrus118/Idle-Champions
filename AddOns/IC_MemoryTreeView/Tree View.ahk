@@ -1,11 +1,10 @@
 #SingleInstance, force
-#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\classMemory.ahk
-;#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_MemoryReader_Class.ahk
-;#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_MemoryObjects_Class.ahk
-#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_Structure_IdleGameManager.ahk
-#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_Structure_ActiveEffectHandlers.ahk
-#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_Structure_GameSettings.ahk
-#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_Structure_EngineSettings.ahk
+#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead2\
+#include classMemory.ahk
+#include IC_MemoryReader_Class.ahk
+#include IC_MemoryObjects_Class.ahk
+#include Structures\IdleGameManager.ahk
+#include Structures\ActiveEffectHandlers.ahk
 #include %A_LineFile%\..\..\..\SharedFunctions\classExceptionHandler.ahk
 ;to do - fix exception when child doesn't populate, collapse then expand again should do it.
 ;to do - auto read in structures
@@ -30,7 +29,7 @@ global g_TV
 
 MemoryReader.Refresh()
 GuiControl, -Redraw, TreeViewID
-objArray := [ new IdleGameManager, new BrivUnnaturalHasteHandler, new TimeScaleWhenNotAttackedhandler, new HavilarImpHandler, new OminContractualObligationsHandler, new NerdWagonHandler, new GameSettings, new CoreEngineSettings ]
+objArray := [ new IdleGameManager, new BrivUnnaturalHasteHandler, new TimeScaleWhenNotAttackedhandler, new HavilarImpHandler, new OminContractualObligationsHandler, new NerdWagonHandler ]
 g_TV := new TV_MemoryView(objArray*)
 TV_Modify(0, "Sort") 
 GuiControl, +Redraw, TreeViewID

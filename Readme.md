@@ -8,19 +8,28 @@ Currently only works on Steam v425.1
 ## TO DO
 1. Finish to do list
 2. Test gem farm and add ons
-3. Update Dat Set Memory Structure for Steam and EGS and GameManager/Effect Keys for EGS.
+3. Create add on for offset updater.
 4. Figure out how to make a to do list auto number, or remove numbering.
-6. Create add on for updating offsets
 7. Iterate on and refine changes
 8. Create new or modify existing docs for all changes
-9. Add support for EGS
-10. Rethink file convetion for memory structure files
+10. Rethink file convention for memory structure files
 
 ## Known Issues
-1. Azaka, NERDs, and No Modron Leveling add ons are broken.
-2. EGS not supported. (hopefully soon)
+1. Azaka, NERDs, and No Modron Leveling add ons are probably broken.
 
 ## Change Log
+4/19/22
+
+    Semi functional offset updater.
+    EGS now supported.
+    Continued restructuring of files.
+
+4/17/22
+
+    Refactored server call class to not rely on GameSettings memory reads, now uses web request log.
+    Revised gem farm and shared functions for refactored server call class.
+    Refactored chest buy/open add on to not rely on chest data memory reads, now uses local cached defs as source with ability to resource from main cached defs.
+    Added comments to memory structure files to assist in auto updating.
 
 4/15/22
 

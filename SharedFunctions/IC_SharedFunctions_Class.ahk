@@ -495,7 +495,7 @@ class IC_SharedFunctions_Class
             ; reset memory values in case they missed an update.
             this.Hwnd := WinExist( "ahk_exe IdleDragons.exe" )
             this.Memory.OpenProcessReader()
-            this.ResetServerCall()
+            ;this.ResetServerCall()
             ; try a fall back
             this.FallBackFromZone()
             this.DirectedInput(,, "{q}" ) ; safety for correct party
@@ -627,7 +627,7 @@ class IC_SharedFunctions_Class
     {
         ; check that server call object is updated before closing IC in case any server calls need to be made
         ; by the script before the game restarts
-        this.ResetServerCall()
+        ;this.ResetServerCall()
         if ( string != "" )
             string := ": " . string
         g_SharedData.LoopString := "Closing IC" . string
@@ -676,7 +676,7 @@ class IC_SharedFunctions_Class
             Process, Priority, % this.PID, High
             this.Memory.OpenProcessReader()
             loadingZone := this.WaitForGameReady()
-            this.ResetServerCall()
+            ;this.ResetServerCall()
         }
         if(ElapsedTime >= 30000)
             return -1 ; took too long to open
@@ -763,7 +763,7 @@ class IC_SharedFunctions_Class
             Process, Exist, IdleDragons.exe
             this.PID := ErrorLevel
             this.Memory.OpenProcessReader()
-            this.ResetServerCall()
+            ;this.ResetServerCall()
         }
         return true
     }
