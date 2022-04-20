@@ -385,7 +385,7 @@ class IC_MemoryFunctions_Class
 
     ReadSBStacks()
     {
-        return this.GenericGetValue(this.GameManager.Game.GameInstance.Controller.UserData.StatHandler.BrivSteelbonesStacks)
+        ;return this.GenericGetValue(this.GameManager.Game.GameInstance.Controller.UserData.StatHandler.BrivSteelbonesStacks)
         return this.userData.StatHandler.BrivSteelbonesStacks.GetValue()
     }
 

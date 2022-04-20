@@ -8,7 +8,6 @@ Currently only works on Steam v425.1
 ## TO DO
 1. Finish to do list
 2. Test gem farm and add ons
-3. Create add on for offset updater.
 4. Figure out how to make a to do list auto number, or remove numbering.
 7. Iterate on and refine changes
 8. Create new or modify existing docs for all changes
@@ -18,6 +17,10 @@ Currently only works on Steam v425.1
 1. Azaka, NERDs, and No Modron Leveling add ons are probably broken.
 
 ## Change Log
+4/20/22
+
+    Created Offset Updater add on. Untested, probably has pathing issues and doesn't work.
+
 4/19/22
 
     Semi functional offset updater.
