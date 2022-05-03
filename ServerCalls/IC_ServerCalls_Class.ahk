@@ -232,6 +232,7 @@ class IC_ServerCalls_Class
         endPos := InStr(wrl, string2,, foundPos + 1)
         length := endPos - foundPos
         data := SubStr(wrl, foundPos, length)
+        wrl := ""
         return data
     }
 
@@ -254,6 +255,7 @@ class IC_ServerCalls_Class
             endPos := InStr(wrl, stringEnd,, foundPos + 1)
             length := endPos - foundPos + StrLen(stringEnd)
             data := SubStr(wrl, foundPos, length)
+            wrl := ""
             return data
         }
     }

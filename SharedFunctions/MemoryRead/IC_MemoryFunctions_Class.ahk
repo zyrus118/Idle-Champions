@@ -1,14 +1,9 @@
 ;wrapper with memory reading functions sourced from: https://github.com/Kalamity/classMemory
-#include %A_LineFile%\..\classMemory.ahk
 #include %A_LineFile%\..\IC_GameManager_Class.ahk
 #include %A_LineFile%\..\IC_GameSettings_Class.ahk
 #include %A_LineFile%\..\IC_EngineSettings_Class.ahk
 #include %A_LineFile%\..\IC_CrusadersGameDataSet_Class.ahk
 #include %A_LineFile%\..\IC_DialogManager_Class.ahk
-#include %A_LineFile%\..\IC_Structure_IdleGameManager.ahk
-#include %A_LineFile%\..\IC_Structure_GameSettings.ahk
-#include %A_LineFile%\..\IC_Structure_EngineSettings.ahk
-#include %A_LineFile%\..\IC_MemoryReader_Class.ahk
 
 ;Check if you have installed the class correctly.
 if (_ClassMemory.__Class != "_ClassMemory")
@@ -34,9 +29,22 @@ class IC_MemoryFunctions_Class
         this.EngineSettings := new IC_EngineSettings_Class
         this.CrusadersGameDataSet := new IC_CrusadersGameDataSet_Class
         this.DialogManager := new IC_DialogManager_Class
-        this.idleGameManager := new IdleGameManager
-        this.idleGameSettings := new GameSettings
-        this.idleEngineSettings := new CoreEngineSettings
+        this.idleGameManager := MemoryReader.InitGameManager()
+        ;this.idleGameSettings := new GameSettings
+        ;this.idleEngineSettings := new CoreEngineSettings
+
+        this.gameInstance := MemoryReader.InitGameInstance()
+        this.area := this.gameInstance.Controller.area
+        this.areaTransitioner := this.gameInstance.Controller.areaTransitioner
+        this.formation := this.gameInstance.Controller.formation
+        this.userData := this.gameInstance.Controller.userData
+        this.heroes := this.gameInstance.HeroHandler.parent.heroes
+        this.ActiveCampaignData := this.gameInstance.ActiveCampaignData
+        this.formationSavesV2 := this.gameInstance.FormationSaveHandler.formationSavesV2
+        this.offlineProgressHandler := this.gameInstance.offlineProgressHandler
+        this.ModronHandler := this.userData.ModronHandler
+        this.uiController := this.gameInstance.Screen.uiController
+        this.ultimatesBar := this.uiController.ultimatesBar
     }
 
     ;Updates installed after the date of this script may result in the pointer addresses no longer being accurate.
@@ -52,18 +60,6 @@ class IC_MemoryFunctions_Class
     OpenProcessReader()
     {
         MemoryReader.Refresh()
-        this.gameInstance := this.idleGameManager.game.gameInstances.Item[0]
-        this.area := this.gameInstance.Controller.area
-        this.areaTransitioner := this.gameInstance.Controller.areaTransitioner
-        this.formation := this.gameInstance.Controller.formation
-        this.userData := this.gameInstance.Controller.userData
-        this.heroes := this.gameInstance.HeroHandler.parent.heroes
-        this.ActiveCampaignData := this.gameInstance.ActiveCampaignData
-        this.formationSavesV2 := this.gameInstance.FormationSaveHandler.formationSavesV2
-        this.offlineProgressHandler := this.gameInstance.offlineProgressHandler
-        this.ModronHandler := this.userData.ModronHandler
-        this.uiController := this.gameInstance.Screen.uiController
-        this.ultimatesBar := this.uiController.ultimatesBar
 
         this.GameManager.Refresh()
         if(!this.Is64Bit and this.GameManager.is64Bit())
@@ -122,14 +118,14 @@ class IC_MemoryFunctions_Class
 
     ReadGameVersion()
     {
-        ;if(this.GenericGetValue(this.GameSettings.GameSettings.PostFix)  != "")
-        ;    return this.GenericGetValue(this.GameSettings.GameSettings.Version) . this.GenericGetValue(this.GameSettings.GameSettings.PostFix) 
-        ;else
-        ;    return this.GenericGetValue(this.GameSettings.GameSettings.Version)  
-        if(this.idleGameSettings.PostFix.GetValue()  != "")
-            return this.idleGameSettings.MobileClientVersion.GetValue() . this.idleGameSettings.PostFix.GetValue()
+        if(this.GenericGetValue(this.GameSettings.GameSettings.PostFix)  != "")
+            return this.GenericGetValue(this.GameSettings.GameSettings.Version) . this.GenericGetValue(this.GameSettings.GameSettings.PostFix) 
         else
-            return this.idleGameSettings.MobileClientVersion.GetValue()
+            return this.GenericGetValue(this.GameSettings.GameSettings.Version)  
+        ;if(this.idleGameSettings.PostFix.GetValue()  != "")
+        ;    return this.idleGameSettings.MobileClientVersion.GetValue() . this.idleGameSettings.PostFix.GetValue()
+        ;else
+        ;    return this.idleGameSettings.MobileClientVersion.GetValue()
     }
 
     ReadGameStarted()
@@ -312,32 +308,32 @@ class IC_MemoryFunctions_Class
 
     ReadUserID()
     {
-        ;return this.GenericGetValue(this.GameSettings.GameSettings.UserID)
-        return this.idleGameSettings.UserID.GetValue()
+        return this.GenericGetValue(this.GameSettings.GameSettings.UserID)
+        ;return this.idleGameSettings.UserID.GetValue()
     }
 
     ReadUserHash()
     {
-        ;return this.GenericGetValue(this.GameSettings.GameSettings.Hash)
-        return this.idleGameSettings.Hash.GetValue()
+        return this.GenericGetValue(this.GameSettings.GameSettings.Hash)
+        ;return this.idleGameSettings.Hash.GetValue()
     }
 
     ReadInstanceID()
     {
-        ;return this.GenericGetValue(this.GameSettings.GameSettings._Instance.InstanceID)
-        return this.idleGameSettings.Instance.instanceID.GetValue()
+        return this.GenericGetValue(this.GameSettings.GameSettings._Instance.InstanceID)
+        ;return this.idleGameSettings.Instance.instanceID.GetValue()
     }
 
     ReadWebRoot()
     {
-        ;return this.GenericGetValue(this.Enginesettings.EngineSettings.WebRoot) 
-        return this.idleEngineSettings.WebRoot.GetValue()
+        return this.GenericGetValue(this.Enginesettings.EngineSettings.WebRoot) 
+        ;return this.idleEngineSettings.WebRoot.GetValue()
     }
 
     ReadPlatform()
     {
-        ;return this.GenericGetValue(this.GameSettings.GameSettings.Platform)
-        return this.idleGameSettings.Platform.GetValue()
+        return this.GenericGetValue(this.GameSettings.GameSettings.Platform)
+        ;return this.idleGameSettings.Platform.GetValue()
     }
 
     ReadGameLocation()

@@ -318,4 +318,4 @@ class IC_JimothySharedFunctions_Class extends IC_SharedFunctions_Class
     }
 }
 
-#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead\IC_Structure_ActiveEffecthandlers.ahk
+#include %A_LineFile%\..\..\..\SharedFunctions\MemoryRead2\Structures\ActiveEffecthandlers.ahk

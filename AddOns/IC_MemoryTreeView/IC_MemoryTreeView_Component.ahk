@@ -14,5 +14,4 @@ Launch_MemoryTreeView()
     Run, %A_LineFile%\..\Tree View.ahk
 }
 
-
-#include %A_LineFile%\..\..\..\SharedFunctions\ObjRegisterActive.ahk
+;#include %A_LineFile%\..\..\..\SharedFunctions\ObjRegisterActive.ahk

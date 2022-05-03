@@ -36,7 +36,10 @@ class IC_BrivSharedFunctions_Class extends IC_SharedFunctions_Class
         version := this.Memory.ReadGameVersion()
         if(version != "")
             g_ServerCall.clientVersion := version
-        g_ServerCall.webroot := this.Memory.ReadWebRoot() ? this.Memory.ReadWebRoot() : g_ServerCall.webroot
+        tempWebRoot := this.Memory.ReadWebRoot()
+        httpString := StrSplit(tempWebRoot,":")
+        isWebRootValid := httpString == "http" or httpString == "https"
+        g_ServerCall.webroot := isWebRootValid ? this.Memory.ReadWebRoot() : g_ServerCall.webroot
         g_ServerCall.networkID := this.Memory.ReadPlatform() ? this.Memory.ReadPlatform() : g_ServerCall.networkID
         g_ServerCall.activeModronID := this.Memory.ReadActiveGameInstance() ? this.Memory.ReadActiveGameInstance() : 1 ; 1, 2, 3 for modron cores 1, 2, 3
         g_ServerCall.activePatronID := this.Memory.ReadPatronID() ; 0 = no patron
@@ -127,8 +130,6 @@ class IC_BrivGemFarm_Class
     ;The primary loop for gem farming using Briv and modron.
     GemFarm()
     {
-        g_Log.StartLogging()
-        logInit := new _EventLog("Initialize Gem Run")
         static lastResetCount := 0
         g_SharedData.TriggerStart := true
         g_SF.Hwnd := WinExist("ahk_exe IdleDragons.exe")
@@ -139,22 +140,17 @@ class IC_BrivGemFarm_Class
         if(g_SF.VerifyAdventureLoaded() < 0)
             return
         g_SF.CurrentAdventure := g_SF.Memory.ReadCurrentObjID()
-        g_ServerCall := new IC_BrivServerCall_Class()
+        g_SF.ResetServerCall()
         g_SF.GameStartFormation := g_BrivUserSettings[ "BrivJumpBuffer" ] > 0 ? 3 : 1
         g_SaveHelper.Init() ; slow call, loads briv dictionary (3+s)
         formationModron := g_SF.Memory.GetActiveModronFormation()
         formationQ := g_SF.FindChampIDinSavedFormation( 1, "Speed", 1, 58 )
         formationW := g_SF.FindChampIDinSavedFormation( 2, "Stack Farm", 1, 58 )
         formationE := g_SF.FindChampIDinSavedFormation( 3, "Speed No Briv", 0, 58 )
-        formationMaxLvl := g_Lvl.GetFormationMaxLvl(formationModron)
-        logInit.Add(new _DataPoint("Modron Formation Max Level Array", ArrFnc.GetDecFormattedAssocArrayString(formationMaxLvl)))
         if(!formationQ OR !formationW OR !formationE)
             return
         g_PreviousZoneStartTime := A_TickCount
         g_SharedData.StackFail := 0
-        logInit.Stop()
-        g_Log.LogObject(logInit)
-        logGemRun := new _EventLog("Gem Run, Initial", true)
         loop
         {
             g_SharedData.LoopString := "Main Loop"
@@ -164,10 +160,6 @@ class IC_BrivGemFarm_Class
             g_SF.SetFormation(g_BrivUserSettings)
             if ( g_SF.Memory.ReadResetsCount() > lastResetCount OR g_SharedData.TriggerStart) ; first loop or Modron has reset
             {
-                logGemRun.Stop()
-                g_Log.LogObject(logGemRun)
-                g_Log.ClearStack()
-                logGemRun := new _EventLog("Gem Run", true)
                 g_SharedData.BossesHitThisRun := 0
                 g_SF.ToggleAutoProgress( 0, false, true )
                 g_SF.WaitForFirstGold()
@@ -195,22 +187,19 @@ class IC_BrivGemFarm_Class
                 this.ModronResetCheck()
             if(CurrentZone > PreviousZone) ; needs to be greater than because offline could stacking getting stuck in descending zones.
             {
-                logNewZone := new _EventLog("New Zone", true)
                 PreviousZone := CurrentZone
-                logNewZone.Add(new _DataPoint("Current Zone", CurrentZone))
                 if(!Mod( g_SF.Memory.ReadHighestZone(), 5 ))
                 {
                     g_SharedData.TotalBossesHit++
                     g_SharedData.BossesHitThisRun++
                 }
-                if(doKeySpam AND g_BrivUserSettings[ "Fkeys" ] AND g_Lvl.AreHeroesUpgraded(formationMaxLvl)) ;g_SF.AreChampionsUpgraded(formationQ))
+                if(doKeySpam AND g_BrivUserSettings[ "Fkeys" ] AND g_SF.AreChampionsUpgraded(formationQ))
                 {
                     g_SF.DirectedInput(hold:=0,release:=1, keyspam) ;keysup
                     keyspam := ["{ClickDmg}"]
                     doKeySpam := false
                 }
                 g_SF.InitZone( keyspam )
-                logNewZone.Stop()
             }
             g_SF.ToggleAutoProgress( 1 )
             if(g_SF.CheckifStuck())

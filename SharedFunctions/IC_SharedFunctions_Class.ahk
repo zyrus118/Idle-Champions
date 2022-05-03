@@ -14,7 +14,8 @@ global g_SharedData := new IC_SharedData_Class
 #include %A_LineFile%\..\IC_ArrayFunctions_Class.ahk
 #include %A_LineFile%\..\MemoryRead\IC_MemoryFunctions_Class.ahk
 ;Shandie's Dash handler
-#include %A_LineFile%\..\MemoryRead\IC_Structure_ActiveEffectHandlers.ahk
+#include %A_LineFile%\..\MemoryRead2\IC_MemoryObjects_Class.ahk
+#include %A_LineFile%\..\MemoryRead2\Structures\ActiveEffectHandlers.ahk
 
 class IC_SharedData_Class
 {
@@ -85,6 +86,9 @@ class IC_SharedFunctions_Class
     __new()
     {
         this.Memory := New IC_MemoryFunctions_Class
+
+        this.GameManager := MemoryReader.InitGameManager()
+        this.GameInstance := MemoryReader.InitGameInstance()
     }
 
     ;=======================
@@ -215,6 +219,15 @@ class IC_SharedFunctions_Class
         return fellBack
     }
 
+    AutoProgressToggled[]
+    {
+        get
+        {
+            value := this.GameManager.game.screenController.activeScreen.uiController.topBar.objectiveProgressBox.areaBar.autoProgressButton.toggled.GetValue()
+            return value != "" ? value : 1
+        }
+    }
+
     ; IsToggled be 0 for off or 1 for on. ForceToggle always hits G. ForceState will press G until AutoProgress is read as on (<5s).
     ToggleAutoProgress( isToggled := 1, forceToggle := false, forceState := false )
     {
@@ -225,9 +238,9 @@ class IC_SharedFunctions_Class
 
         if ( forceToggle )
             this.DirectedInput(,, "{g}" )
-        if ( this.Memory.ReadAutoProgressToggled() != isToggled )
+        if ( this.AutoProgressToggled != isToggled )
             this.DirectedInput(,, "{g}" )
-        while ( this.Memory.ReadAutoProgressToggled() != isToggled AND forceState AND ElapsedTime < 5001 )
+        while ( this.AutoProgressToggled != isToggled AND forceState AND ElapsedTime < 5001 )
         {
             ElapsedTime := A_TickCount - StartTime
             if(ElapsedTime > sleepTime * keyCount)

@@ -30,6 +30,13 @@ GetModronGUIVersion()
 #include %A_ScriptDir%\ServerCalls\IC_ServerCalls_Class.ahk
 ;logging functions
 #include %A_ScriptDir%\Logging\IC_Log_Class.ahk
+;memory read classes
+#include %A_ScriptDir%\SharedFunctions\MemoryRead2\classMemory.ahk
+#include %A_ScriptDir%\SharedFunctions\MemoryRead2\IC_MemoryReader_Class.ahk
+#include %A_ScriptDir%\SharedFunctions\MemoryRead2\IC_MemoryObjects_Class.ahk
+;memory structures
+#include %A_ScriptDir%\SharedFunctions\MemoryRead2\Structures\IdleGameManager.ahk
+#include %A_ScriptDir%\SharedFunctions\MemoryRead2\Structures\ActiveEffecthandlers.ahk
 
 global g_KeyMap := KeyHelper.BuildVirtualKeysMap()
 global g_ServerCall

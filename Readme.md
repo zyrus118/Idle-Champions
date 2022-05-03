@@ -7,16 +7,25 @@ Currently only works on Steam v425.1
 
 ## TO DO
 1. Finish to do list
-2. Test gem farm and add ons
+2. Create new gem farm add on and finalize memory v2
+3. Update existing add ons
 4. Figure out how to make a to do list auto number, or remove numbering.
 7. Iterate on and refine changes
 8. Create new or modify existing docs for all changes
 10. Rethink file convention for memory structure files
 
 ## Known Issues
-1. Azaka, NERDs, and No Modron Leveling add ons are probably broken.
+1. All add ons are probably broken.
 
 ## Change Log
+5/3/22
+
+    Reverted changes to Briv Gem Farm. Begun new gem farm add on for new memory system.
+
+4/30/22
+
+    To reduce the number of server calls the script makes, buy or open chests now will only make server calls when max amount can be purchased or opened.
+
 4/20/22
 
     Created Offset Updater add on. Untested, probably has pathing issues and doesn't work.

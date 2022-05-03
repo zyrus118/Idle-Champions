@@ -83,6 +83,13 @@ class CrusadersGame
             ;FE
         }
 
+        class MonsterDef extends UnityGameEngine.Data.DataDef
+        {
+            ;FB-CrusadersGame.Defs.MonsterDef
+            Name := new System.String(0xC, 0, this)
+            ;FE
+        }
+
         class PatronDef extends UnityGameEngine.Data.DataDef
         {
             ;FB-CrusadersGame.Defs.PatronDef
@@ -273,6 +280,7 @@ class CrusadersGame
         class Monster extends UnityGameEngine.Display.Drawable
         {
             ;FB-CrusadersGame.GameScreen.Monster
+            monsterDef := new CrusadersGame.Defs.MonsterDef(572, 0, this)
             active := new System.Boolean(1865, 2601, this)
             ;FE
         }
@@ -431,6 +439,7 @@ class CrusadersGame
 
 class OfflineProgressHandler extends System.Object
 {
+    ;offlineProgress := new offlineProgressHandler.OfflineProgressionDetails(0x14, 0, this)
     ;FB-OfflineProgressHandler
     modronSave := new CrusadersGame.User.UserModronHandler.ModronCoreData(32, 64, this)
     monstersSpawnedThisArea := new System.Int32(160, 216, this)
@@ -443,6 +452,12 @@ class OfflineProgressHandler extends System.Object
         Type := "System.Int32"
         Enum := {0:"Canceled", 1:"FinishedFullTime", 2:"FinishedPartialTimeWithReset"}
     }
+
+    ;class OfflineProgressionDetails extends System.Object
+    ;{
+        ;NOTUSED-OfflineProgressHandler+OfflineProgressionDetails
+
+    ;}
 }
 
 class UnityGameEngine

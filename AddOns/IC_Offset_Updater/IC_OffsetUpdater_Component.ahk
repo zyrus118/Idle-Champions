@@ -1,8 +1,8 @@
 GUIFunctions.AddTab("Offset Updater")
 
 Gui, ICScriptHub:Tab, Offset Updater
-Gui, ICScriptHub:Add, Button, x+15 y+15 w160 gOSUpdater_Steam, Update Steam Offsets
-Gui, ICScriptHub:Add, Button, x+15 y+15 w160 gOSUpdater_EGS, Update Steam Offsets
+Gui, ICScriptHub:Add, Button, x15 y+15 w160 gOSUpdater_Steam, Update Steam Offsets
+Gui, ICScriptHub:Add, Button, x15 y+15 w160 gOSUpdater_EGS, Update EGS Offsets
 string := "Instructions:`n"
 string .= "`nFirst Time Steps:"
 string .= "`nA. Copy the file named ScriptHubExport.lua saved at: " 
@@ -24,7 +24,7 @@ string .= "`n10. If there are no errors noted in the differential, back up the o
 string .= "submit a pull request with the updated files, and notify the official discord."
 string .= "`n11. If there are errors, please share the new files on the discord so we can debug."
 
-Gui, ICScriptHub:Add, Text, y+15 w475, % string
+Gui, ICScriptHub:Add, Text, x15 y+15 w475, % string
 
 OSUpdater_Steam()
 {

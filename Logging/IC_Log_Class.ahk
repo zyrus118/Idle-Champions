@@ -15,153 +15,117 @@ class _classLog
     }
 
     stack := {}
-    doLogging := false
 
-    __New( doLogging := false )
+    __New(fileName)
     {
-        if( doLogging )
-        {
-            this.StartLogging()
-        }
+        this.CreateLogFile(fileName)
+        this.CreateEvent(fileName)
         Return this
     }
 
-    StartLogging()
-    {
-        this.doLogging := true
-        this.CreateLog()
-    }
-
-    StopLogging()
-    {
-        ; TODO: do logging finalization and shutdown
-        this.doLogging := false
-    }
-
-    CreateLog()
+    CreateLogFile(fileName)
     {
         dir := A_ScriptDir . "\LOG"
         if !FileExist( dir )
             FileCreateDir, %dir%
-        this.fileName := "LOG\" . A_YYYY . "_" . A_MM . A_DD . "_1.json"
+        this.fileName := "LOG\" . A_YYYY . "_" . A_MM . A_DD . fileName . "_1.json"
         i := 2
         while ( FileExist( this.fileName ) )
         {
-            this.fileName := "LOG\" . A_YYYY . "_" . A_MM . A_DD . "_" . i . ".json"
+            this.fileName := "LOG\" . A_YYYY . "_" . A_MM . A_DD . fileName . "_" . i . ".json"
             ++i
         }
         FileAppend, [, % this.fileName
     }
 
-    LogObject( obj )
+    LogStack()
     {
-        if(this.doLogging)
-        {
-            FileAppend, % JSON.stringify( obj ) . ",", % this.fileName
-        }
-        Return
+        FileAppend, % JSON.stringify( this.stack ) . ",", % this.fileName
+        this.stack := {}
     }
 
-    LogFinalObject( obj )
+    EndLog()
     {
-        if(this.doLogging)
-        {
-            FileAppend, % JSON.stringify( obj ) . "]", % this.fileName
-        }
-        Return
+        FileAppend, % JSON.stringify( this.stack ) . "]", % this.fileName
+        this := ""
     }
 
     AddToStack( obj )
     {
-        if(this.doLogging)
+        index := this.stack.Count()
+        if index != 0
+            this.stack[ index ].eventLog.Push( obj )
+        this.stack.Push( obj )
+    }
+
+    CreateEvent(description)
+    {
+        this.CurrentEvent := new _classLog.Event(description)
+        this.AddToStack(this.CurrentEvent)
+    }
+
+    EndEvent()
+    {
+        this.CurrentEvent.Stop()
+        this.stack.Pop()
+    }
+
+    AddData(description, value)
+    {
+        this.CurrentEvent.Add(new _classLog.Data(description, value))
+    }
+
+    class Event
+    {
+        eventLog := {}
+
+        __new(description)
         {
-            index := this.stack.Count()
-            if index != 0
-                this.stack[ index ].eventLog.Push( obj )
-            this.stack.Push( obj )
+            this.event := {}
+            this.event.description := description . ""
+            this.event.duration := new _classLog.Duration()
+            Return this
+        }
+
+        Add( value )
+        {
+            this.eventLog.Push( value )
+        }
+
+        Stop()
+        {
+            this.event.duration.Stop()
         }
     }
 
-    PopStack()
+    class Duration
     {
-        if(this.doLogging)
+        ms := -1
+
+        __new()
         {
-            this.stack.Pop()
+            this.startTickCount := A_TickCount + 0
+            this.timeStamp := A_Now
+            Return this
+        }
+
+        Stop()
+        {
+            this.ms := A_TickCount - this.startTickCount
+            this.minutes := this.ms / 60000
         }
     }
 
-    ClearStack()
+    class Data
     {
-        if(this.doLogging)
+        entry := {}
+
+        __new(description, value)
         {
-            this.stack := {}
+            this.entry.description := description . ""
+            this.entry.tickCount := A_TickCount + 0
+            this.entry.value := value . ""
+            Return this
         }
-    }
-}
-
-class _EventLog
-{
-    event := {}
-    event.description := ""
-    event.duration := ""
-    eventLog := {}
-    __new( description, addToStack := "false" )
-    {
-        this.event := {}
-        this.event.description := description . ""
-        this.event.duration := new _ValueStartStop()
-        if addToStack
-        {
-            g_Log.AddToStack(this)
-            this.OnStack := true
-        }
-        Return this
-    }
-
-    Add( value )
-    {
-        this.eventLog.Push( value )
-    }
-
-    Stop()
-    {
-        this.event.duration.Stop()
-        if this.OnStack
-            g_Log.PopStack()
-    }
-}
-
-class _ValueStartStop
-{
-    startTickCount := ""
-    timeStamp := ""
-    ms := -1
-    __new()
-    {
-        this.startTickCount := A_TickCount + 0
-        this.timeStamp := A_Now
-        Return this
-    }
-
-    Stop()
-    {
-        this.ms := A_TickCount - this.startTickCount
-        this.minutes := this.ms / 60000
-    }
-}
-
-class _DataPoint
-{
-    entry := {}
-    entry.description := ""
-    entry.tickCount := ""
-    entry.value := ""
-
-    __new( description, value, paramToBeRemoved := "" )
-    {
-        this.entry.description := description . ""
-        this.entry.tickCount := A_TickCount + 0
-        this.entry.value := value . ""
-        Return this
     }
 }
