@@ -12,7 +12,30 @@ string .= "`n4. A separate script will launch and begin farming gems. Only close
 string .= "`n5. A selection of statistics will update approximately ever 5 seconds."
 Gui, ICScriptHub:Add, Text, x15 y+15 w450, % string
 
+global g_GemFarmSettings := g_SF.LoadObjectFromJSON( A_LineFile . "\..\Settings.json" )
+
+;check if first run
+If !IsObject( g_GemFarmSettings )
+{
+    g_GemFarmSettings := {}
+    g_SF.WriteObjectToJSON( A_LineFile . "\..\Settings.json" , g_GemFarmSettings )
+}
+
 Gui, ICScriptHub:Add, Text, x15 y+15 w450, Settings:
+
+if ( g_GemFarmSettings.UseFkeys == "" )
+    g_GemFarmSettings.UseFkeys := 1
+Gui, ICScriptHub:Add, Text, x15 y+15, Use Fkeys to level champions:
+chk := g_GemFarmSettings.UseFkeys
+Gui, ICScriptHub:Add, Checkbox, vGemFarmUseFkeys Checked%chk% x+5, True
+Gui, ICScriptHub:Add, Text, x+5 vGemFarmUseFkeysSaved w200, % g_GemFarmSettings.UseFkeys == 1 ? "Saved value: True":"Saved value: False"
+
+if ( g_GemFarmSettings.DashWait == "" )
+    g_GemFarmSettings.DashWait := 1
+Gui, ICScriptHub:Add, Text, x15 y+15, Wait for Dash:
+chk := g_GemFarmSettings.DashWait
+Gui, ICScriptHub:Add, Checkbox, vGemFarmDashWait Checked%chk% x+5, True
+Gui, ICScriptHub:Add, Text, x+5 vGemFarmDashWaitSaved w200, % g_GemFarmSettings.DashWait == 1 ? "Saved value: True":"Saved value: False"
 
 Gui, ICScriptHub:Add, Text, x15 y+15 w200 vGemFarmStats, Stats: OFF
 Gui, ICScriptHub:Add, Text, x15 y+10 w200 vGemFarmBPH, BPH:

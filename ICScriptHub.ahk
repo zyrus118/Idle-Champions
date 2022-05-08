@@ -34,9 +34,16 @@ GetModronGUIVersion()
 #include %A_ScriptDir%\SharedFunctions\MemoryRead2\classMemory.ahk
 #include %A_ScriptDir%\SharedFunctions\MemoryRead2\IC_MemoryReader_Class.ahk
 #include %A_ScriptDir%\SharedFunctions\MemoryRead2\IC_MemoryObjects_Class.ahk
+MemoryReader.Refresh() ;must call each time window is restarted.
 ;memory structures
 #include %A_ScriptDir%\SharedFunctions\MemoryRead2\Structures\IdleGameManager.ahk
 #include %A_ScriptDir%\SharedFunctions\MemoryRead2\Structures\ActiveEffecthandlers.ahk
+;virtual key inputs - works like directed input but more reliable for slower systems, particularly on up key
+#include %A_ScriptDir%\SharedFunctions\classVirtualKeyInputs.ahk
+VirtualKeyInputs.Init( "ahk_exe IdleDragons.exe" ) ;this single call should be sufficient for any add ons even after window opens and closes
+;leveling functions
+#include %A_ScriptDir%\SharedFunctions\IC_Leveling_Class.ahk
+global g_Level := new IC_Leveling_Class
 
 global g_KeyMap := KeyHelper.BuildVirtualKeysMap()
 global g_ServerCall

@@ -19,7 +19,7 @@ class _classLog
     __New(fileName)
     {
         this.CreateLogFile(fileName)
-        this.CreateEvent(fileName)
+        ;this.CreateEvent(fileName)
         Return this
     }
 

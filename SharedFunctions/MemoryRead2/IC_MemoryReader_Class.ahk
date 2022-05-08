@@ -1,6 +1,6 @@
-#Include, IC_MemoryObjects_Class.ahk
-#Include, \Structures\IdleGameManager.ahk
-#Include, \Structures\ActiveEffectHandler.ahk
+#Include IC_MemoryObjects_Class.ahk
+#Include %A_LineFile%\..\Structures\IdleGameManager.ahk
+#Include %A_LineFile%\..\Structures\ActiveEffectHandlers.ahk
 
 class MemoryReader
 {

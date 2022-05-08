@@ -87,7 +87,8 @@ class Jimothy
             this.External.Update(this)
             g_SF.ToggleAutoProgress(1)
             if(this.UseFkeys)
-                g_SF.DirectedInput(,,this.KeySpam*)
+                g_Level.LevelFormationSmart()
+                ;g_SF.DirectedInput(,,this.KeySpam*)
             if (this.UseClick)
                 g_SF.DirectedInput(,,"{ClickDmg}")
             Sleep, 10 ;an attempt to help with gui freezing
@@ -108,19 +109,22 @@ class Jimothy
 
     Initialize()
     {
-        g_SF.Hwnd := WinExist("ahk_exe IdleDragons.exe")
-        g_SF.Memory.OpenProcessReader()
+        ;g_SF.Hwnd := WinExist("ahk_exe IdleDragons.exe")
+        ;g_SF.Memory.OpenProcessReader()
         ;this.CheckSetup()
+        MemoryReader.Refresh()
         this.formationQ := g_SF.Memory.GetFormationByFavorite(1)
         if (this.UseHew)
         {
-            g_SF.LevelChampByID( 75, 10, 7000, "{q}") ; level hew once
+            g_Level.LevelChampByID(75, 10,, "q") ; level hew once
             this.HewSlot := this.GetHewSlot()
         }
         if (this.UseFkeys)
         {
-            this.KeySpam := g_SF.GetFormationFKeys(this.formationQ)
-            this.KeySpamTxt := ArrFnc.GetAlphaNumericArrayString(this.KeySpam)
+            g_Level.NewFormation(this.formationQ)
+
+            ;this.KeySpam := g_SF.GetFormationFKeys(this.formationQ)
+            ;this.KeySpamTxt := ArrFnc.GetAlphaNumericArrayString(this.KeySpam)
         }
         return
     }
@@ -129,10 +133,10 @@ class Jimothy
     {
         isShandieInFormation := g_SF.IsChampInFormation( 47, this.formationQ )
         if (isShandieInFormation)
-            g_SF.LevelChampByID( 47, 230, 7000, "{q}") ; level shandie
+            g_Level.LevelChampByID(47, 230,, "q")
         isBrivInFormation := g_SF.IsChampInFormation( 58, this.formationQ )
         if (isBrivInFormation)
-            g_SF.LevelChampByID( 58, 170, 7000, "{q}") ; level briv
+            g_Level.LevelChampByID(58, 170,, "q")
         isHavilarInFormation := g_SF.IsChampInFormation( 56, this.formationQ )
         if (isHavilarInFormation)
         {
