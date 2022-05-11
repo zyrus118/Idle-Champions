@@ -8,6 +8,9 @@ class IC_GemFarm_Functions
         MemoryReader.Refresh()
         this.IdleGameManager := MemoryReader.InitIdleGameManager()
         this.GameInstance := MemoryReader.InitGameInstance()
+        this.Briv := new IC_BrivHandler_Class(58)
+        this.Stats := this.GameInstance.Controller.userData.StatHandler
+        return this
     }
 
     ;these should probably be handled differently
@@ -19,57 +22,80 @@ class IC_GemFarm_Functions
         }
     }
 
+
     GemFarm()
     {
-        this.Log.CreateEvent("Startup")
-        this.Log.AddData("Settings", JSON.Stringify(this.Settings))
+        g_Log.CreateEvent("Startup")
+        g_Log.AddData("Settings", JSON.Stringify(this.Settings))
+
+        while !(g_SF.SafetyCheck(true))
+        {
+            g_SF.OpenIC(this.Settings.InstallPath)
+            g_SF.LoadAdventure(this.Briv)
+        }
 
         MemoryReader.Refresh()
 
         ;read in formations
         formationModron := g_SF.Memory.GetActiveModronFormation()
-        this.Log.AddData("Modron Formation", ArrFnc.GetDecFormattedArrayString(formationModron))
+        g_Log.AddData("Modron Formation", ArrFnc.GetDecFormattedArrayString(formationModron))
         ;these are just to troubleshoot
         formationQ := g_SF.FindChampIDinSavedFormation( 1, "Speed", 1, 58 )
-        this.Log.AddData("Q Formation", ArrFnc.GetDecFormattedArrayString(formationQ))
+        g_Log.AddData("Q Formation", ArrFnc.GetDecFormattedArrayString(formationQ))
         formationW := g_SF.FindChampIDinSavedFormation( 2, "Stack Farm", 1, 58 )
-        this.Log.AddData("W Formation", ArrFnc.GetDecFormattedArrayString(formationW))
+        g_Log.AddData("W Formation", ArrFnc.GetDecFormattedArrayString(formationW))
+        this.Settings.stackFormation := formationW
         formationE := g_SF.FindChampIDinSavedFormation( 3, "Speed No Briv", 0, 58 )
-        this.Log.AddData("E Formation", ArrFnc.GetDecFormattedArrayString(formationE))
+        g_Log.AddData("E Formation", ArrFnc.GetDecFormattedArrayString(formationE))
 
         ;build fkey input data
         if (this.Settings.UseFkeys)
         {
-            g_Level.NewFormation(formationModron)
-            this.Log.AddData("Formation Data", JSON.Stringify(g_Level.Formation))
-            ;this.FormationMaxLvl := g_Level.GetFormationMaxLvl(formationModron)
-            ;this.Log.AddData("Modron Formation Max Lvl", ArrFnc.GetDecFormattedAssocArrayString(this.FormationMaxLvl))
-            ;this.FormationFKeys := g_Level.GetFormationFkeys(formationModron)
-            ;this.Log.AddData("Modron Formation FKeys", ArrFnc.GetAlphaNumericArrayString(this.FormationFKeys))
+            g_Level.SetFormation(formationModron)
+            g_Log.AddData("Formation Data", JSON.Stringify(g_Level.Formation))
         }
 
         ;set up shandie
         if (this.Settings.DashWait)
         {
-            this.DashHandler := new TimeScaleWhenNotAttackedHandler
+            this.Shandie := new IC_ShandieHandler_Class(47)
         }
 
         ;adds start up to log file
-        this.Log.LogStack()
+        g_Log.LogStack()
         ;start new log event
-        this.Log.CreateEvent("Gem Farm-Partial")
+        g_Log.CreateEvent("Gem Farm-Partial")
 
         loop
         {
+            if !(g_SF.SafetyCheck())
+            {
+                g_SF.OpenIC(this.Settings.InstallPath)
+                g_SF.LoadAdventure(this.Briv)
+            }
+
             ;to be nested in another function, not sure where yet, probably before a restart?
             if (this.ReloadTime < A_TickCount)
                 Reload
 
             this.CheckDoZoneOne()
 
-            
+            this.CheckStackFarm()
 
-            
+            if (this.Settings.UseFkeys)
+                g_Level.LevelFormationSmart()
+        }
+    }
+
+    CheckStackFarm()
+    {
+        if (this.CurrenZone > this.Settings.StackZone AND this.Briv.Stacks < this.Settings.TargetStacks)
+        {
+            this.Briv.StackFarm()
+        }
+        if (this.Briv.HasteStacks < 50 AND this.CurrentZone > this.Settings.MinStackZone AND this.Briv.Stacks < this.Settings.TargetStacks)
+        {
+            this.Briv.StackFarm()
         }
     }
 
@@ -84,6 +110,7 @@ class IC_GemFarm_Functions
 
     DoZoneOne()
     {
+        g_Log.CreateEvent(A_ThisFunc)
         ;make sure we can do something on zone 1, ie kill monster and get some gold
         startTime := A_TickCount
         elapsedTime := 0
@@ -95,45 +122,33 @@ class IC_GemFarm_Functions
         }
         ;if after 60s still no gold, leave this func
         if !MemoryReader.GameInstance.ActiveCampaignData.gold.GetValue()
+        {
+            g_Log.AddData("gold", MemoryReader.GameInstance.ActiveCampaignData.gold.GetValue())
+            g_Log.EndEvent()
             return
+        }
+        ;level briv to unlock MetalBorn
+        g_Level.LevelChampByID(58, 170,, "q")
         g_SF.ToggleAutoProgress(0)
         if (this.Settings.DashWait)
         {
             ;level shandie to unlock Dash
             g_Level.LevelChampByID(47, 120,, "q")
-            ;level briv to unlock MetalBorn
-            g_Level.LevelChampByID(58, 170,, "q")
             this.CheckDoDashWait()
         }
-        else 
-            ;level briv to unlock MetalBorn
-            g_Level.LevelChampByID(58, 170,, "q")
         ;finish zone one spamming inputs, so we don't end up just back in this function
         ;could use some toggle, but game screws up so toggle won't get flipped
         g_SF.FinishZone(30000, this.Settings.UseFkeys, "q")
         g_SF.ToggleAutoProgress(1)
         ;call briv swap
+        g_Log.EndEvent()
     }
 
     CheckDoDashWait()
     {
-        if (this.Settings.DashWait AND !(this.DashHandler.scaleActive.GetValue()))
+        if (this.Settings.DashWait AND !(this.Shandie.IsDashActive))
         {
-            this.DoDashWait()
+            this.Shandie.DoDashWait("q", this.Settings.UseFkeys)
         }
-    }
-
-    DoDashWait()
-    {
-        startTime := A_TickCount
-        while ( !(this.DashHandler.scaleActive.GetValue()) AND elapsedTime < ((60000 / this.IdleGameManager.TimeScale.GetValue()) * 1.2))
-        {
-            ;spam fkeys to level champs and work out any kinks in the virtual key inputs
-            if (this.Settings.UseFkeys)
-                g_Level.LevelFormationSmart("q")
-            else
-                sleep, 250
-            elapsedTime := A_TickCount - startTime
-        }
-    }
+    }   
 }

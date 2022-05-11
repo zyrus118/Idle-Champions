@@ -21,9 +21,6 @@ MemoryReader.Refresh()
 
 #Include %A_LineFile%\..\IC_GemFarm_Functions.ahk
 global g_GemFarm := new IC_GemFarm_Functions
-g_GemFarm.Log := g_Log
-
-
 
 ;load settings
 global g_GemFarmSettings := g_SF.LoadObjectFromJSON( A_LineFile . "\..\Settings.json" )

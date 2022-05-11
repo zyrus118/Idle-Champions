@@ -37,6 +37,22 @@ chk := g_GemFarmSettings.DashWait
 Gui, ICScriptHub:Add, Checkbox, vGemFarmDashWait Checked%chk% x+5, True
 Gui, ICScriptHub:Add, Text, x+5 vGemFarmDashWaitSaved w200, % g_GemFarmSettings.DashWait == 1 ? "Saved value: True":"Saved value: False"
 
+Gui, ICScriptHub:Add, Edit, vGemFarmStackZone x15 y+5 w50, % g_GemFarmSettings[ "StackZone" ]
+Gui, ICScriptHub:Add, Text, x+5, Farm SB stacks AFTER this zone
+Gui, ICScriptHub:Add, Text, x15 y+5 vGemFarmStackZoneSaved w200, % "Saved value: " . g_GemFarmSettings[ "StackZone" ]
+
+Gui, ICScriptHub:Add, Edit, vGemFarmMinStackZone x15 y+10 w50, % g_GemFarmSettings[ "MinStackZone" ]
+Gui, ICScriptHub:Add, Text, x+5, Minimum zone Briv can farm SB stacks on
+Gui, ICScriptHub:Add, Text, x15 y+5 vGemFarmMinStackZoneSaved w200, % "Saved value: " . g_GemFarmSettings[ "MinStackZone" ]
+
+Gui, ICScriptHub:Add, Edit, vGemFarmTargetStacks x15 y+10 w50, % g_GemFarmSettings[ "TargetStacks" ]
+Gui, ICScriptHub:Add, Text, x+5, Target Haste stacks for next run
+Gui, ICScriptHub:Add, Text, x15 y+5 vGemFarmTargetStacksSaved w200, % "Saved value: " . g_GemFarmSettings[ "TargetStacks" ]
+
+Gui, ICScriptHub:Add, Edit, vGemFarmRestartStackTime x15 y+10 w50, % g_GemFarmSettings[ "RestartStackTime" ]
+Gui, ICScriptHub:Add, Text, x+5, `Time (ms) client remains closed to trigger Restart Stacking (0 disables)
+Gui, ICScriptHub:Add, Text, x15 y+5 vGemFarmRestartStackTimeSaved w200, % "Saved value: " . g_GemFarmSettings[ "RestartStackTime" ]
+
 Gui, ICScriptHub:Add, Text, x15 y+15 w200 vGemFarmStats, Stats: OFF
 Gui, ICScriptHub:Add, Text, x15 y+10 w200 vGemFarmBPH, BPH:
 Gui, ICScriptHub:Add, Text, x15 y+5 w200 vGemFarmGPH, GPH:

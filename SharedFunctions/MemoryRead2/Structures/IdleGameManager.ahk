@@ -37,6 +37,7 @@ class CrusadersGame
         ActiveCampaignData := new CrusadersGame.GameScreen.ActiveCampaignData(16, 32, this)
         HeroHandler := new CrusadersGame.User.Instance.UserInstanceHeroHandler(20, 40, this)
         ResetHandler := new CrusadersGame.User.Instance.UserInstanceResetHandler(28, 56, this)
+        StatHandler := new CrusadersGame.User.Instance.UserInstanceStatHandler(32, 0, this)
         PatronHandler := new CrusadersGame.User.Instance.UserInstancePatronHandler(40, 80, this)
         FormationSaveHandler := new CrusadersGame.User.UserInstanceFormationSaveHandler(48, 96, this)
         offlineProgressHandler := new OfflineProgressHandler(64, 128, this)
@@ -161,6 +162,7 @@ class CrusadersGame
     class Game extends UnityGameEngine.GameBase
     {
         ;FB-CrusadersGame.Game
+        loadingScreen := new CrusadersGame.LoadingScreen(44, 0, this)
         gameUser := new UnityGameEngine.UserLogin.GameUser(84, 168, this)
         gameInstances := new System.List(88, 176, this, CrusadersGame.ChampionsGameInstance)
         gameStarted := new System.Boolean(124, 248, this)
@@ -342,6 +344,19 @@ class CrusadersGame
         }
     }
 
+    class LoadingScreen extends UnityGameEngine.GameScreenController.GameScreen
+    {
+        ;FB-CrusadersGame.LoadingScreen
+        loadingText := new UnityGameEngine.Display.Drawable(584, 0, this)
+        loadingProgress := new System.Int32(732, 0, this)
+        socialUserAuthenticationDone := new System.Boolean(757, 0, this)
+        loadUserReady := new System.Boolean(758, 0, this)
+        loadingGameUser := new System.Boolean(759, 0, this)
+        loadingDefinitions := new System.Boolean(763, 0, this)
+        loadingDefinitionsProgress := new System.Float(776, 0, this)
+        ;FE
+    }
+
     class User
     {
         class Instance
@@ -370,6 +385,17 @@ class CrusadersGame
                 ;FB-CrusadersGame.User.Instance.UserInstanceResetHandler
                 resetting := new System.Boolean(28, 56, this)
                 tries := new System.Int32(32, 60, this)
+                ;FE
+            }
+
+            class UserInstanceStatHandler extends CrusadersGame.User.Instance.UserInstanceDataHandler
+            {
+                ;FB-CrusadersGame.User.Instance.UserInstanceStatHandler
+                ActiveNerd0 := new System.Int32(512, 0, this)
+                ActiveNerd1 := new System.Int32(516, 0, this)
+                ActiveNerd2 := new System.Int32(520, 0, this)
+                DSpec1HeroId := new System.Int32(548, 0, this)
+                DSpec1SlotId := new System.Int32(552, 0, this)
                 ;FE
             }
         }
@@ -484,7 +510,9 @@ class UnityGameEngine
 
         class Drawable extends System.Object
         {
-
+            ;FB-UnityGameEngine.Display.Drawable
+            lastSetText := new System.String(52, 0, this)
+            ;FE
         }
     }
 
@@ -519,6 +547,7 @@ class UnityGameEngine
         {
             ;FB-UnityGameEngine.UserLogin.GameUser
             Hash := new System.String(16, 32, this)
+            Loaded := new System.Boolean(44, 0, this)
             ID := new System.Int32(48, 88, this)
             ;FE
         }

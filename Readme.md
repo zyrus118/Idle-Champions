@@ -3,7 +3,6 @@
 
 The ultimate goal of this branch is to create a refactored memory system that functions as well or better than the existing system that will continue to work with existing scripts and add ons and includes a new feature to automate or mostly automate updating offsets when CNE pushes out new patches.
 
-Currently only works on Steam v425.1
 
 ## TO DO
 1. Finish to do list
@@ -12,12 +11,18 @@ Currently only works on Steam v425.1
 4. Figure out how to make a to do list auto number, or remove numbering.
 7. Iterate on and refine changes
 8. Create new or modify existing docs for all changes
-10. Rethink file convention for memory structure files
+10. Rethink file convention for memory/shared structure files
 
 ## Known Issues
-1. All add ons are probably broken.
+1. Nothing works right now.
 
 ## Change Log
+5/9/22
+
+    Added instance stat handler which includes NERDs and DM special guest fields.
+    Created hero, briv, and shandie handler classes.
+    Updated leveling class to use hero classes.
+    
 5/3/22
 
     Reverted changes to Briv Gem Farm. Begun new gem farm add on for new memory system.

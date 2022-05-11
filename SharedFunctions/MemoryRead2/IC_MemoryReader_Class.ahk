@@ -67,6 +67,17 @@ class MemoryReader
         return this.GameInstance
     }
 
+    InitHeroes()
+    {
+        if IsObject(this.Heroes)
+            return this.Heroes
+        if !(this.StructuresDictionary.HasKey("GameInstance"))
+            this.InitGameInstance()
+        this.Heroes := this.GameInstance.HeroHandler.parent.heroes
+        this.AddToStructures("Heroes", this.Heroes)
+        return this.Heroes
+    }
+
     DestroyInstance(key)
     {
         this[key] := ""
