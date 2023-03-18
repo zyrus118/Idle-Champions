@@ -1,3 +1,4 @@
+# Game Object Concept Branch - Currently breaks multiple add ons.
 # IC Script Hub
 ## ``New:``
 Script Hub has been updated for use with and with antilectual's [ScriptHub-AutomaticOffsets](https://github.com/antilectual/ScriptHub-AutomaticOffsets). See the the linked repo for instructions on how to use it to update Script Hub's offsets.

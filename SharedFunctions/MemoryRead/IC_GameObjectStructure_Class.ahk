@@ -1,4 +1,6 @@
 #include %A_LineFile%\..\..\IC_ArrayFunctions_Class.ahk
+#include %A_LineFile%\..\classMemory.ahk
+#include %A_LineFile%\..\_ClassMemoryManager.ahk
 ; GameManager class contains the in game data structure layout
 ; LastUpdated := "2022-02-01"
 
@@ -64,9 +66,15 @@ class GameObjectStructure
     }
  
     ; Creates a new instance of GameObjectStructure
+    ; These objects will contain fields of unknown names and naming conventions that represent the games memory structures
+    ; To avoid conflicts, the objects internal members will use sh_ preface
      __new(baseStructureOrFullOffsets, ValueType := "Int", appendedOffsets*)
     {
         this.ValueType := ValueType
+
+        this.sh_classMemory := _ClassMemoryManager.classMemory ; A reference to an instance of _ClassMemory
+        this.sh_classMemoryType := ValueType ; a field to be used to store the type as needed by _ClassMemory
+
         if(!appendedOffsets[1]) ; When using an array, create a base structure
         {
             this.FullOffsets.Push(baseStructureOrFullOffsets*)
@@ -79,14 +87,30 @@ class GameObjectStructure
             this.DictIndexes := baseStructureOrFullOffsets.DictIndexes.Clone()
             this.Is64Bit := baseStructureOrFullOffsets.Is64Bit
             this.Offset := appendedOffsets[1]
+
+            this.sh_offset := this.FullOffsets[this.FullOffsets.Count()]
+            this.sh_Parent := baseStructureOrFullOffsets ; Used to recursively read addresses and not have to mess with offsets in the method call.
+            this.sh_Parent.sh_classMemoryType := this.sh_classMemory.ptrType ; Override the imports value type "Int" so we can properly read pointer values
         }
         if(ValueType == "List" or ValueType == "HashSet")
         {
             ;add items
             this.FullOffsets.Push(this.Is64Bit ? 0x10 : 0x8)
             this.ListIndexes.Push(this.FullOffsets.Count())
+
+            this.sh_classMemoryType := this.sh_classMemory.ptrType
+            this.sh_items := {} ; The collected items, so they are only constructed once.
+            this.sh_children := {} ; A dictionary of children, to be populated by a separate method after entire chain is completed
+            this.sh_offsetStep := 0x8 ; TODO include data in imports for non reference type lists that will adjust this offsetStep as necessary
+            this.sh_isCollection := true
+            ; The following two are actual members of a C# list structure
+            ; Still not sure if we should include with sh members, but other methods do need to identify these to avoid recursion.
+            this.sh_items := new GameObjectStructure(this, this.sh_classMemory.ptrType, [0x10]) ; A pointer to the collected items
+            this.sh_size := new GameObjectStructure(this, "Int", [0x18]) ; The size/count of the collection
         }
-        if(ValueType == "Dict")
+        ; Shouldn't be a case of being a List and Dict, so changed this from if to else if
+        ; TODO create properties and methods for dictionary collections
+        else if(ValueType == "Dict")
         {
             ;add _entries
             this.FullOffsets.Push(this.Is64Bit ? 0x18 : 0xC)
@@ -289,5 +313,62 @@ class GameObjectStructure
         if (array.1 == "value")
             offset += valueOffset
         return offset
+    }
+
+    ; Read the value of the game object from memory.
+    ; A return value of null means failed read at some point.
+    ReadValue()
+    {
+        if IsObject(this.sh_Parent)
+        {
+            ; C# string is an object with length and value property. The string can contain multiple null terminators, so it is good practice to use length.
+            if (this.sh_classMemoryType == "UTF-16")
+            {
+                stringAddress := this.sh_classMemory.read(this.sh_Parent.ReadValue() + this.sh_offset, this.sh_classMemory.ptrType)
+                length := this.sh_classMemory.read(stringAddress + 0x10, "Int")
+                value := this.sh_classMemory.readString(stringAddress + 0x14, length, this.sh_classMemoryType)
+            }
+            else
+            {
+                value := this.sh_classMemory.read(this.sh_Parent.ReadValue() + this.sh_offset, this.sh_classMemoryType)
+            }
+        }
+        ; If there is no parent object, then at base object.
+        else
+        {
+            value := this.sh_classMemory.read(_ClassMemoryManager.BaseAddress["mono-2.0-bdwgc.dll"] + this.sh_moduleOffset, this.sh_classMemory.ptrType, this.FullOffsets*)
+        }
+        return value
+    }
+
+    ; A property used for list and hashset collections
+    Item[index]
+    {
+        get
+        {
+            ; First check to make sure we haven't already created this object
+            if (this.sh_items[index])
+            {
+                obj := this.sh_items[index]
+            }
+            else
+            {
+                obj := new GameObjectStructure(this.sh_items, this.sh_classMemory.ptrType, [0x20 + index * this.sh_offsetStep]) ; Not sure why offset is put in an array but it is.
+                this.sh_items[index] := obj
+            }
+            ; This is kind of goofy, but not sure what else to do.
+            ; We need to make sure the children look at the correct parent.
+            ; Should make deep clones, but had recursion issues on first attempt.
+            for k, v in this.sh_children
+            {
+                if (InStr(k, "sh_"))
+                {
+                    continue
+                }
+                obj[k] := v
+                obj[k].sh_Parent := obj
+            }
+            return obj
+        }
     }
 }
